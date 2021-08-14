@@ -14,10 +14,6 @@ admin.site.site_header = "Blue Mountain Admin"
 class StudentAdmin(admin.ModelAdmin):
     pass
 
-@admin.register(models.StudentPersonalInfo)
-class StudentPersonalInfoAdmin(admin.ModelAdmin):
-    pass
-
 @admin.register(models.StudentAttendance)
 class StudentAttendanceAdmin(admin.ModelAdmin):
     pass
@@ -36,10 +32,6 @@ class ClassroomAdmin(admin.ModelAdmin):
 
 @admin.register(models.Teacher)
 class TeacherAdmin(admin.ModelAdmin):
-    pass
-
-@admin.register(models.TeacherPersonalInfo)
-class TeacherPersonalInfoAdmin(admin.ModelAdmin):
     pass
 
 @admin.register(models.Fee)
