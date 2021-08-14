@@ -40,18 +40,6 @@ class FY(models.Model):
 		return str(self.start_year)+ ':' +str(self.end_year)
 
 
-class Classroom(models.Model):
-	class_name = models.CharField(max_length=20, null=True, blank=True)
-	section_name = models.CharField(max_length=2, null=True, blank=True)
-	timetable = models.CharField(max_length=1000, null=True, blank=True)
-	financial_year = models.ForeignKey(FY, null=True, blank=True, on_delete=models.SET_NULL)
-	meet_link = models.CharField(max_length=200, null=True, blank=True)
-
-	def __str__(self):
-		return str(self.class_name)+ ":" +str(self.section_name) + " - " + str(self.financial_year)
-
-
-
 class Student(models.Model):
 	statusChoices = (
 		(1, 'Active'),
@@ -61,16 +49,8 @@ class Student(models.Model):
 	first_name = models.CharField(max_length=100)
 	last_name = models.CharField(max_length=20)
 	user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
-	classroom = models.ForeignKey(Classroom, null=True, blank=True, on_delete=models.SET_NULL)
 	status = models.IntegerField(choices=statusChoices, default=0)
 	# call_time_end = models.DateTimeField()
-
-	def __str__(self):
-		return str(self.first_name)+" "+str(self.last_name)+" - " +str(self.classroom)
-
-
-class StudentPersonalInfo(models.Model):
-	student = models.ForeignKey(Student, on_delete=models.SET_NULL, null=True)
 	fathers_name = models.CharField(max_length=20, null=True, blank=True)
 	mothers_name = models.CharField(max_length=20, null=True, blank=True)
 	fathers_last_name = models.CharField(max_length=20, null=True, blank=True)
@@ -81,6 +61,21 @@ class StudentPersonalInfo(models.Model):
 	heightCM = models.CharField(max_length=10, null=True, blank=True)
 	weight = models.CharField(max_length=10, null=True, blank=True)
 	blood_group = models.CharField(max_length=10, null=True, blank=True)
+
+	def __str__(self):
+		return str(self.first_name)+" "+str(self.last_name)
+
+
+class Classroom(models.Model):
+	class_name = models.CharField(max_length=20, null=True, blank=True)
+	section_name = models.CharField(max_length=2, null=True, blank=True)
+	timetable = models.CharField(max_length=1000, null=True, blank=True)
+	financial_year = models.ForeignKey(FY, null=True, blank=True, on_delete=models.SET_NULL)
+	meet_link = models.CharField(max_length=200, null=True, blank=True)
+	students = models.ManyToManyField(Student, blank=True, help_text="Select all students to be present here")
+
+	def __str__(self):
+		return str(self.class_name)+ ":" +str(self.section_name) + " - " + str(self.financial_year)
 
 
 class StudentAttendance(TimeStampedModel):
@@ -121,10 +116,6 @@ class Teacher(TimeStampedModel):
 	mobile_no = models.CharField(max_length=10, null=True, blank=True)
 	status = models.IntegerField(choices=statusChoices, default=0)
 
-
-
-class TeacherPersonalInfo(models.Model):
-	teacher = models.ForeignKey(Teacher, on_delete=models.SET_NULL, null=True)
 	address = models.CharField(max_length=200, null=True, blank=True)
 	contact_no = models.CharField(max_length=10, null=True, blank=True)
 	emergenct_contact = models.CharField(max_length=10, null=True, blank=True)
@@ -179,7 +170,7 @@ class Fee(TimeStampedModel):
 		return str(self.id) + str(dict(self.fees_type_choices).get(self.fees_type))
 
 
-signals.post_save.connect(fees_post_save, sender=Fee)
+# signals.post_save.connect(fees_post_save, sender=Fee)
 
 
 
