@@ -38,6 +38,6 @@ class Banner(models.Model):
 	)
 
 	banner_type = models.IntegerField(choices=typeChoices, default=0)
-	image = models.ImageField(upload_to='banner/', height_field=None, width_field=None, max_length=1000, null=True, blank=True)
+	image = models.ImageField(upload_to='templates/banner/', height_field=None, width_field=None, max_length=1000, null=True, blank=True)
 	status = models.IntegerField(choices=statusChoices, default=0)
 

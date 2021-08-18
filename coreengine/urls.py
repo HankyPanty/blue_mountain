@@ -9,4 +9,8 @@ urlpatterns = [
 	path('admission/', core_views.Admission.as_view(), name='admission'),
 	path('banner/<str:banner_name>', core_views.Banner.as_view(), name='banner'),
 	path('faculties/', core_views.Faculties.as_view(), name='faculties'),
+	path('founders/', core_views.Founders.as_view(), name='faculties'),
+	path('principal/', core_views.Principal.as_view(), name='faculties'),
+	path('infrastructure/', core_views.Infrastructure.as_view(), name='faculties'),
+	path('contact/', core_views.Contact.as_view(), name='faculties'),
 ]
