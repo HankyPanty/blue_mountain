@@ -57,9 +57,9 @@ class Student(models.Model):
 	address = models.CharField(max_length=200, null=True, blank=True)
 	contact_no = models.CharField(max_length=10, null=True, blank=True)
 	emergenct_contact = models.CharField(max_length=10, null=True, blank=True)
-	dob = models.DateField(null=True, blank=True)
-	heightCM = models.CharField(max_length=10, null=True, blank=True)
-	weight = models.CharField(max_length=10, null=True, blank=True)
+	dob = models.DateField()
+	heightCM = models.FloatField(null=True, blank=True)
+	weightKG = models.FloatField(null=True, blank=True)
 	blood_group = models.CharField(max_length=10, null=True, blank=True)
 
 	def __str__(self):
@@ -131,11 +131,8 @@ def fees_post_save(sender, instance, created, **kwargs):
 	with transaction.atomic():
 		student = instance.student
 		classroom = instance.classroom
-		financial_year = instance.financial_year
-		if financial_year:
-			students=Student.objects.filter(classroom__financial_year=financial_year)
 		if classroom:
-			students=Student.objects.filter(classroom=classroom)
+			students=classroom.students
 		if student:
 			students=Student.objects.filter(student=student)
 
@@ -164,13 +161,18 @@ class Fee(TimeStampedModel):
 	amountINR = models.IntegerField()
 	classroom = models.ForeignKey(Classroom, on_delete=models.SET_NULL, null=True, blank=True, help_text="Select Only ONE")
 	student = models.ForeignKey(Student, on_delete=models.SET_NULL, null=True, blank=True, help_text="Select Only ONE")
-	financial_year = models.ForeignKey(FY, on_delete=models.SET_NULL, null=True, blank=True, help_text="Select Only ONE")
+	financial_year = models.ForeignKey(FY, on_delete=models.PROTECT)
 
 	def __str__(self):
-		return str(self.id) + str(dict(self.fees_type_choices).get(self.fees_type))
+		return str(dict(self.fees_type_choices).get(self.fees_type)) +": "+ str(self.financial_year)
+
+	def save(self, *args, **kwargs):
+		if self.student and self.classroom:
+			raise ValidationError("Only one can be selected")
+		super(Fee, self).save(*args, **kwargs)
 
 
-# signals.post_save.connect(fees_post_save, sender=Fee)
+signals.post_save.connect(fees_post_save, sender=Fee)
 
 
 
@@ -192,5 +194,7 @@ class Amount(TimeStampedModel):
 
 	def save(self, *args, **kwargs):
 		self.amount_remaining = self.total_amount - self.amount_paid if self.total_amount - self.amount_paid > 0 else 0
+		if not self.amount_remaining:
+			self.completed = 1
 		super(Amount, self).save(*args, **kwargs)
 
