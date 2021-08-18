@@ -19,6 +19,14 @@ class Home(APIView):
 		# return HttpResponse("This is Home Page.")
 		return render(request, 'index.html')
 
+class Banner(APIView):
+
+	def get(self, request, banner_name):
+		image_data = open("./banner/"+str(banner_name), "rb").read()
+		return HttpResponse(image_data, content_type="image/png")
+		# return HttpResponse("This is Home Page.")
+		return render(request, 'admission.html')
+
 
 class Curriculum(APIView):
 
