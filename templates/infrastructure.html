@@ -45,96 +45,6 @@
 <link rel='dns-prefetch' href='//s.w.org' />
 <link rel="alternate" type="application/rss+xml" title="Blue Mountain &raquo; Feed" href="http://www.cambridge-aurangabad.com/feed/" />
 <link rel="alternate" type="application/rss+xml" title="Blue Mountain &raquo; Comments Feed" href="http://www.cambridge-aurangabad.com/comments/feed/" />
-<!-- This site uses the Google Analytics by ExactMetrics plugin v6.0.2 - Using Analytics tracking - https://www.exactmetrics.com/ -->
-<script type="text/javascript" data-cfasync="false">
-	var em_version         = '6.0.2';
-	var em_track_user      = true;
-	var em_no_track_reason = '';
-	
-	var disableStr = 'ga-disable-UA-134618039-1';
-
-	/* Function to detect opted out users */
-	function __gaTrackerIsOptedOut() {
-		return document.cookie.indexOf(disableStr + '=true') > -1;
-	}
-
-	/* Disable tracking if the opt-out cookie exists. */
-	if ( __gaTrackerIsOptedOut() ) {
-		window[disableStr] = true;
-	}
-
-	/* Opt-out function */
-	function __gaTrackerOptout() {
-	  document.cookie = disableStr + '=true; expires=Thu, 31 Dec 2099 23:59:59 UTC; path=/';
-	  window[disableStr] = true;
-	}
-
-	if ( 'undefined' === typeof gaOptout ) {
-		function gaOptout() {
-			__gaTrackerOptout();
-		}
-	}
-	
-	if ( em_track_user ) {
-		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-		})(window,document,'script','//www.google-analytics.com/analytics.js','__gaTracker');
-
-window.ga = __gaTracker;		__gaTracker('create', 'UA-134618039-1', 'auto');
-		__gaTracker('set', 'forceSSL', true);
-		__gaTracker('send','pageview');
-		__gaTracker( function() { window.ga = __gaTracker; } );
-	} else {
-		console.log( "" );
-		(function() {
-			/* https://developers.google.com/analytics/devguides/collection/analyticsjs/ */
-			var noopfn = function() {
-				return null;
-			};
-			var noopnullfn = function() {
-				return null;
-			};
-			var Tracker = function() {
-				return null;
-			};
-			var p = Tracker.prototype;
-			p.get = noopfn;
-			p.set = noopfn;
-			p.send = noopfn;
-			var __gaTracker = function() {
-				var len = arguments.length;
-				if ( len === 0 ) {
-					return;
-				}
-				var f = arguments[len-1];
-				if ( typeof f !== 'object' || f === null || typeof f.hitCallback !== 'function' ) {
-					console.log( 'Not running function __gaTracker(' + arguments[0] + " ....) because you are not being tracked. " + em_no_track_reason );
-					return;
-				}
-				try {
-					f.hitCallback();
-				} catch (ex) {
-
-				}
-			};
-			__gaTracker.create = function() {
-				return new Tracker();
-			};
-			__gaTracker.getByName = noopnullfn;
-			__gaTracker.getAll = function() {
-				return [];
-			};
-			__gaTracker.remove = noopfn;
-			window['__gaTracker'] = __gaTracker;
-			window.ga = __gaTracker;		})();
-		}
-</script>
-<!-- / Google Analytics by ExactMetrics -->
-		<script type="text/javascript">
-			window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/12.0.0-1\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/12.0.0-1\/svg\/","svgExt":".svg","source":{"concatemoji":"http:\/\/www.cambridge-aurangabad.com\/wp-includes\/js\/wp-emoji-release.min.js?ver=5.3.8"}};
-			!function(e,a,t){var n,r,o,i=a.createElement("canvas"),p=i.getContext&&i.getContext("2d");function s(e,t){var a=String.fromCharCode;p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,e),0,0);e=i.toDataURL();return p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,t),0,0),e===i.toDataURL()}function c(e){var t=a.createElement("script");t.src=e,t.defer=t.type="text/javascript",a.getElementsByTagName("head")[0].appendChild(t)}for(o=Array("flag","emoji"),t.supports={everything:!0,everythingExceptFlag:!0},r=0;r<o.length;r++)t.supports[o[r]]=function(e){if(!p||!p.fillText)return!1;switch(p.textBaseline="top",p.font="600 32px Arial",e){case"flag":return s([127987,65039,8205,9895,65039],[127987,65039,8203,9895,65039])?!1:!s([55356,56826,55356,56819],[55356,56826,8203,55356,56819])&&!s([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]);case"emoji":return!s([55357,56424,55356,57342,8205,55358,56605,8205,55357,56424,55356,57340],[55357,56424,55356,57342,8203,55358,56605,8203,55357,56424,55356,57340])}return!1}(o[r]),t.supports.everything=t.supports.everything&&t.supports[o[r]],"flag"!==o[r]&&(t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&t.supports[o[r]]);t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&!t.supports.flag,t.DOMReady=!1,t.readyCallback=function(){t.DOMReady=!0},t.supports.everything||(n=function(){t.readyCallback()},a.addEventListener?(a.addEventListener("DOMContentLoaded",n,!1),e.addEventListener("load",n,!1)):(e.attachEvent("onload",n),a.attachEvent("onreadystatechange",function(){"complete"===a.readyState&&t.readyCallback()})),(n=t.source||{}).concatemoji?c(n.concatemoji):n.wpemoji&&n.twemoji&&(c(n.twemoji),c(n.wpemoji)))}(window,document,window._wpemojiSettings);
-		</script>
 		<style type="text/css">
 img.wp-smiley,
 img.emoji {
@@ -560,7 +470,7 @@ p{margin-bottom:20px;}
       <span class="col-xs-6 col-sm-3">
         
                       <a href="http://www.cambridge-aurangabad.com/">
-                <img src="http://www.cambridge-aurangabad.com/wp-content/uploads/2019/02/WhatsApp-Image-2019-01-30-at-4.19.03-PM.png" class="img-responsive" alt="">
+                <img src="http://localhost:8000/templates/banner/blue_mountain_logo.png" class="img-responsive" alt="">
             </a>
                     
       </span>
@@ -607,7 +517,7 @@ p{margin-bottom:20px;}
 </header>
 <!-- end Header -->  
 
-<div class="inner-banner blog"         style="background: url(http://cambridge-aurangabad.com/wp-content/uploads/2019/02/Faculties.jpg)"  >
+<div class="inner-banner blog" style="background: url(http://www.cambridge-aurangabad.com/wp-content/uploads/2019/02/INFRASTRUCTURE-2.jpg)"  >
   <div class="container">
     <div class="row">
       <div class="col-sm-12">
@@ -621,143 +531,49 @@ p{margin-bottom:20px;}
 </div>
 
 <!-- <section class="testimonial-outer padding-lg"> -->
-<section id="" class="wpb_row vg_fixed  "  ><div class="container"><div class="wpb_column vc_column_container vc_col-sm-6"><div class="vc_column-inner"><div class="wpb_wrapper"><div class="col-sm-12 head-block">
-    <h2>CLOTILDA CRASTO</h2>
-    <p></p>
-  </div>
-
+<section id="" class="wpb_row vg_fixed our-impotance padding-lg  "  ><div class="container"><div class="wpb_column vc_column_container vc_col-sm-12"><div class="vc_column-inner"><div class="wpb_wrapper">
 <div class="title_area ">
-    <h2><span></span> (GRADE KG-II)</h2>
+    <h2><span>THE INFRASTRUCTURAL UNITS INCLUDED IN Blue Mountain</span> INFRASTRUCTURE</h2>
 </div>
-
-	<div class="wpb_text_column wpb_content_element " >
-		<div class="wpb_wrapper">
-			<p><strong><em><b><i>“Our school is a building which has four walls with tomorrow inside.”</i></b></em></strong></p>
-<p>We all want our kids to be successful which is only possible through good and proper education. We at Blue Mountain believe that our role is to encourage the tiny tots to think and develop as an individual so that they can reach their full potential.</p>
-
-		</div>
-	</div>
-</div></div></div><div class="wpb_column vc_column_container vc_col-sm-6"><div class="vc_column-inner"><div class="wpb_wrapper">
-	<div  class="wpb_single_image wpb_content_element vc_align_center  wpb_animate_when_almost_visible wpb_fadeIn fadeIn">
-		
-		<figure class="wpb_wrapper vc_figure">
-			<div class="vc_single_image-wrapper vc_box_shadow_3d  vc_box_border_grey"><img width="400" height="400" src="http://www.cambridge-aurangabad.com/wp-content/uploads/2019/02/1.jpg" class="vc_single_image-img attachment-full" alt="" srcset="http://www.cambridge-aurangabad.com/wp-content/uploads/2019/02/1.jpg 400w, http://www.cambridge-aurangabad.com/wp-content/uploads/2019/02/1-150x150.jpg 150w, http://www.cambridge-aurangabad.com/wp-content/uploads/2019/02/1-300x300.jpg 300w" sizes="(max-width: 400px) 100vw, 400px" /></div>
-		</figure>
-	</div>
-</div></div></div></div></section><section id="" class="wpb_row vg_fixed  "  ><div class="container"><div class="wpb_column vc_column_container vc_col-sm-6"><div class="vc_column-inner"><div class="wpb_wrapper">
-	<div  class="wpb_single_image wpb_content_element vc_align_center  wpb_animate_when_almost_visible wpb_fadeIn fadeIn">
-		
-		<figure class="wpb_wrapper vc_figure">
-			<div class="vc_single_image-wrapper vc_box_shadow_3d  vc_box_border_grey"><img width="400" height="400" src="http://www.cambridge-aurangabad.com/wp-content/uploads/2019/02/4.jpg" class="vc_single_image-img attachment-full" alt="" srcset="http://www.cambridge-aurangabad.com/wp-content/uploads/2019/02/4.jpg 400w, http://www.cambridge-aurangabad.com/wp-content/uploads/2019/02/4-150x150.jpg 150w, http://www.cambridge-aurangabad.com/wp-content/uploads/2019/02/4-300x300.jpg 300w" sizes="(max-width: 400px) 100vw, 400px" /></div>
-		</figure>
-	</div>
-</div></div></div><div class="wpb_column vc_column_container vc_col-sm-6"><div class="vc_column-inner"><div class="wpb_wrapper"><div class="col-sm-12 head-block">
-    <h2>MRS. SUCHETA KHOLKUTE</h2>
-    <p></p>
-  </div>
-
-<div class="title_area dark">
-    <h2><span></span> (GRADE III-IV)</h2>
-</div>
-
-	<div class="wpb_text_column wpb_content_element " >
-		<div class="wpb_wrapper">
-			<p>If we wish to see an enlightened and enterprising nation tomorrow, we must take care to build its future citizens today. Towards this goal, we at Blue Mountain focus on drawing out and developing the hidden talents of our young ones. We do this by focusing on the education of their minds as well as their hearts to nurture a generation which is well informed and is emotionally stable.</p>
-
-		</div>
-	</div>
-</div></div></div></div></section><section id="" class="wpb_row vg_fixed  "  ><div class="container"><div class="wpb_column vc_column_container vc_col-sm-6"><div class="vc_column-inner"><div class="wpb_wrapper"><div class="col-sm-12 head-block">
-    <h2>RIZWANI IMTIAZ</h2>
-    <p></p>
-  </div>
-
-<div class="title_area ">
-    <h2><span></span> (GRADE V- VI)</h2>
-</div>
-
-	<div class="wpb_text_column wpb_content_element " >
-		<div class="wpb_wrapper">
-			<p><em><i>“</i></em><strong><em><b><i>All odds, challenges, and handicaps of life can be overcome with determination, hard work, insurmountable patience, and tenacity</i></b></em></strong><strong><b>.”</b></strong></p>
-<p>At Cambridge, we relentlessly strive to pursue and maintain academic and co-curricular excellence by nurturing, encouraging and motivating the children in an amicable environment and instil in them a creative passion, resilience and leadership qualities.</p>
-
-		</div>
-	</div>
-</div></div></div><div class="wpb_column vc_column_container vc_col-sm-6"><div class="vc_column-inner"><div class="wpb_wrapper">
-	<div  class="wpb_single_image wpb_content_element vc_align_center  wpb_animate_when_almost_visible wpb_fadeIn fadeIn">
-		
-		<figure class="wpb_wrapper vc_figure">
-			<div class="vc_single_image-wrapper vc_box_shadow_3d  vc_box_border_grey"><img width="400" height="400" src="http://www.cambridge-aurangabad.com/wp-content/uploads/2019/02/2.jpg" class="vc_single_image-img attachment-full" alt="" srcset="http://www.cambridge-aurangabad.com/wp-content/uploads/2019/02/2.jpg 400w, http://www.cambridge-aurangabad.com/wp-content/uploads/2019/02/2-150x150.jpg 150w, http://www.cambridge-aurangabad.com/wp-content/uploads/2019/02/2-300x300.jpg 300w" sizes="(max-width: 400px) 100vw, 400px" /></div>
-		</figure>
-	</div>
-</div></div></div></div></section><section id="" class="wpb_row vg_fixed  "  ><div class="container"><div class="wpb_column vc_column_container vc_col-sm-6"><div class="vc_column-inner"><div class="wpb_wrapper">
-	<div  class="wpb_single_image wpb_content_element vc_align_center  wpb_animate_when_almost_visible wpb_fadeIn fadeIn">
-		
-		<figure class="wpb_wrapper vc_figure">
-			<div class="vc_single_image-wrapper vc_box_shadow_3d  vc_box_border_grey"><img width="400" height="400" src="http://www.cambridge-aurangabad.com/wp-content/uploads/2019/02/5.jpg" class="vc_single_image-img attachment-full" alt="" srcset="http://www.cambridge-aurangabad.com/wp-content/uploads/2019/02/5.jpg 400w, http://www.cambridge-aurangabad.com/wp-content/uploads/2019/02/5-150x150.jpg 150w, http://www.cambridge-aurangabad.com/wp-content/uploads/2019/02/5-300x300.jpg 300w" sizes="(max-width: 400px) 100vw, 400px" /></div>
-		</figure>
-	</div>
-</div></div></div><div class="wpb_column vc_column_container vc_col-sm-6"><div class="vc_column-inner"><div class="wpb_wrapper"><div class="col-sm-12 head-block">
-    <h2>MRS. ARTI SARAF</h2>
-    <p></p>
-  </div>
-
-<div class="title_area ">
-    <h2><span></span> (GRADE VII-VIII)</h2>
-</div>
-
-	<div class="wpb_text_column wpb_content_element " >
-		<div class="wpb_wrapper">
-			<p>“<strong><em><b><i>Children must be taught how to think, not what to think.</i></b></em></strong>”</p>
-<p>And to enable this, our motto of knowledge, innovation, and imagination is encouraged through a holistic approach. To motivate the weak, to address the average and challenge the gifted is the teaching vision of the school.</p>
-
-		</div>
-	</div>
-</div></div></div></div></section><section id="" class="wpb_row vg_fixed  "  ><div class="container"><div class="wpb_column vc_column_container vc_col-sm-6"><div class="vc_column-inner"><div class="wpb_wrapper"><div class="col-sm-12 head-block">
-    <h2>MR. SINCHAN MONDAL</h2>
-    <p></p>
-  </div>
-
-<div class="title_area ">
-    <h2><span></span> (GRADE IX- X)</h2>
-</div>
-
-	<div class="wpb_text_column wpb_content_element " >
-		<div class="wpb_wrapper">
-			<p>Education is the passport to the future, because tomorrow belongs to those who prepare for it today.  This is applicable for the students of grade IX and X as they prepare themselves for the boards and culminate their time in the school and prepare for the future. We at Cambridge follow the motto of preparing every student for the future so that when they leave the school with great results, they will be ready to face the challenges life throws their way.</p>
-
-		</div>
-	</div>
-</div></div></div><div class="wpb_column vc_column_container vc_col-sm-6"><div class="vc_column-inner"><div class="wpb_wrapper">
-	<div  class="wpb_single_image wpb_content_element vc_align_center  wpb_animate_when_almost_visible wpb_fadeIn fadeIn">
-		
-		<figure class="wpb_wrapper vc_figure">
-			<div class="vc_single_image-wrapper vc_box_shadow_3d  vc_box_border_grey"><img width="400" height="400" src="http://www.cambridge-aurangabad.com/wp-content/uploads/2019/02/3.jpg" class="vc_single_image-img attachment-full" alt="" srcset="http://www.cambridge-aurangabad.com/wp-content/uploads/2019/02/3.jpg 400w, http://www.cambridge-aurangabad.com/wp-content/uploads/2019/02/3-150x150.jpg 150w, http://www.cambridge-aurangabad.com/wp-content/uploads/2019/02/3-300x300.jpg 300w" sizes="(max-width: 400px) 100vw, 400px" /></div>
-		</figure>
-	</div>
-</div></div></div></div></section><section id="" class="wpb_row vg_fixed  "  ><div class="container"><div class="wpb_column vc_column_container vc_col-sm-6"><div class="vc_column-inner"><div class="wpb_wrapper">
-	<div  class="wpb_single_image wpb_content_element vc_align_center  wpb_animate_when_almost_visible wpb_fadeIn fadeIn">
-		
-		<figure class="wpb_wrapper vc_figure">
-			<div class="vc_single_image-wrapper vc_box_shadow_3d  vc_box_border_grey"><img width="400" height="400" src="http://www.cambridge-aurangabad.com/wp-content/uploads/2019/02/HEAD.jpg" class="vc_single_image-img attachment-full" alt="" srcset="http://www.cambridge-aurangabad.com/wp-content/uploads/2019/02/HEAD.jpg 400w, http://www.cambridge-aurangabad.com/wp-content/uploads/2019/02/HEAD-150x150.jpg 150w, http://www.cambridge-aurangabad.com/wp-content/uploads/2019/02/HEAD-300x300.jpg 300w" sizes="(max-width: 400px) 100vw, 400px" /></div>
-		</figure>
-	</div>
-</div></div></div><div class="wpb_column vc_column_container vc_col-sm-6"><div class="vc_column-inner"><div class="wpb_wrapper"><div class="col-sm-12 head-block">
-    <h2>Mrs. Shubhada Satish</h2>
-    <p></p>
-  </div>
-
-<div class="title_area ">
-    <h2><span>A word from the Head</span> (Planning Committee)</h2>
-</div>
-
-	<div class="wpb_text_column wpb_content_element " >
-		<div class="wpb_wrapper">
-			<p>One of my favourite poets, William Butler Yeats once said, <strong><em><b><i>“Education is not the filling of a pail, but rather the lighting of a fire.”</i></b></em></strong></p>
-<p>At Blue Mountain, we see the sparks of this fire in the eyes of our children when they suddenly discover a concept of Physics or Maths or History or Geography which they might have struggled with before while working on a project. It is this joy of recognition and understanding that keeps us at our task long after the last bus has left the school gates. Our commitment to our students extends beyond school hours because what they are exposed to in school has a profound effect on their lives outside the school as well.</p>
-<p>Everything we do at Cambridge revolves around turning mirrors into windows, to bring the outside within, even as we draw out the talents hidden within.</p>
-
-		</div>
-	</div>
+    <ul class="row">
+          <li class="col-sm-4 equal-hight">
+        <div class="inner"> <img src="http://www.cambridge-aurangabad.com/wp-content/uploads/2019/02/CLASSROOMS.jpg" alt="">
+          <h3>CLASSROOMS</h3>
+          <p> The classrooms are well equipped with all the essential learning materials, well ventilated and brightly coloured which help the students to focus and take interest in their studies.</p>
+        </div>
+      </li>
+            <li class="col-sm-4 equal-hight">
+        <div class="inner"> <img src="http://www.cambridge-aurangabad.com/wp-content/uploads/2019/02/LABORATORY.jpg" alt="">
+          <h3>LABORATORIES</h3>
+          <p>To support theoretical teaching in Physics, Chemistry, Biology, Maths, Computer Applications, and English language, the school has well-equipped and separate laboratories.</p>
+        </div>
+      </li>
+            <li class="col-sm-4 equal-hight">
+        <div class="inner"> <img src="http://www.cambridge-aurangabad.com/wp-content/uploads/2019/02/LIBRARY.jpg" alt="">
+          <h3>LIBRARY</h3>
+          <p>To inculcate the habit of reading in the young minds, we encourage our students to make the full use of our spacious, airy, well -lit & fully furnished library.</p>
+        </div>
+      </li>
+            <li class="col-sm-4 equal-hight">
+        <div class="inner"> <img src="http://www.cambridge-aurangabad.com/wp-content/uploads/2019/02/AUDITORIUM.jpg" alt="">
+          <h3>AUDITORIUM</h3>
+          <p>The school has a state of the art auditorium with a stage, anterooms, an orchestra pit and a seating capacity of 800 students. It is the preferred venue to conduct events on special occasions.</p>
+        </div>
+      </li>
+            <li class="col-sm-4 equal-hight">
+        <div class="inner"> <img src="http://www.cambridge-aurangabad.com/wp-content/uploads/2019/02/SCHOOL-TRANSPORTS.jpg" alt="">
+          <h3>SCHOOL TRANSPORT</h3>
+          <p>A fleet of buses is maintained by the school to provide transport facilities to students and teachers to commute to and fro. The buses are managed by caring and trained staff.</p>
+        </div>
+      </li>
+            <li class="col-sm-4 equal-hight">
+        <div class="inner"> <img src="http://www.cambridge-aurangabad.com/wp-content/uploads/2019/02/SCHOOL-MESS.jpg" alt="">
+          <h3>SCHOOL MESS
+</h3>
+          <p>Keeping in mind the habit of healthy eating, our school provides lunch in the campus as per a healthy eating plan. The school has in-house cooks who prepare hygienic and tasty meals.</p>
+        </div>
+      </li>
+          </ul>
 </div></div></div></div></section>
 <!-- </section> -->
 
@@ -767,19 +583,19 @@ p{margin-bottom:20px;}
   <div class="container">
     <div class="row row1">
       <div class="col-sm-12 clearfix">
-        <div class="foot-nav widget-wrapper widget_text">			<div class="textwidget"><p style="text-align: center;"><img class="aligncenter size-thumbnail wp-image-511" src="http://cambridge-aurangabad.com/wp-content/uploads/2019/02/WhatsApp-Image-2019-01-30-at-4.19.03-PM-150x150.png" alt="" width="100" height="100" /></p>
+        <div class="foot-nav widget-wrapper widget_text">			<div class="textwidget"><p style="text-align: center;"><img class="aligncenter size-thumbnail wp-image-511" src="http://localhost:8000/templates/banner/blue_mountain_logo.png" alt="" width="100" height="100" /></p>
 <p>Founded in the year 1997, Blue Mountain is situated at a sprawling 30 acres of land in the lap of nature.</p>
 </div>
-		</div>         <div class="foot-nav widget-wrapper widget_nav_menu"><h3 class="widget-title">About Us</h3><div class="menu-about-us-container"><ul id="menu-about-us" class="menu"><li id="menu-item-709" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-709"><a href="http://www.cambridge-aurangabad.com/about-us/">ABOUT US</a></li>
-<li id="menu-item-708" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-708"><a href="http://www.cambridge-aurangabad.com/cambridge-school-founders/">ABOUT THE FOUNDER</a></li>
-<li id="menu-item-707" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-707"><a href="http://www.cambridge-aurangabad.com/cambridge-school-aurangabad-principal/">FROM THE PRINCIPAL DESK</a></li>
-<li id="menu-item-705" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-705"><a href="http://www.cambridge-aurangabad.com/why-choose-us/">WHY CHOOSE US?</a></li>
-<li id="menu-item-706" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-706"><a href="http://www.cambridge-aurangabad.com/vision-mission/">VISION &#038; MISSION</a></li>
-</ul></div></div>         <div class="foot-nav widget-wrapper widget_nav_menu"><h3 class="widget-title">QUICK LINKS</h3><div class="menu-quick-links-container"><ul id="menu-quick-links" class="menu"><li id="menu-item-710" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-710"><a href="http://www.cambridge-aurangabad.com/admission/">ADMISSION</a></li>
-<li id="menu-item-712" class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-607 current_page_item menu-item-712"><a href="http://www.cambridge-aurangabad.com/faculties/" aria-current="page">FACULTIES</a></li>
-<li id="menu-item-713" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-713"><a href="http://www.cambridge-aurangabad.com/curriculum/">CURRICULUM</a></li>
-<li id="menu-item-711" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-711"><a href="http://www.cambridge-aurangabad.com/infrastructure/">INFRASTRUCTURE</a></li>
-<li id="menu-item-714" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-714"><a href="http://www.cambridge-aurangabad.com/contact/">CONTACT US</a></li>
+        </div>         <div class="foot-nav widget-wrapper widget_nav_menu"><h3 class="widget-title">About Us</h3><div class="menu-about-us-container"><ul id="menu-about-us" class="menu"><li id="menu-item-709" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-709"><a href="http://localhost:8000/about-us/">ABOUT US</a></li>
+<li id="menu-item-708" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-708"><a href="http://localhost:8000/founders/">ABOUT THE FOUNDER</a></li>
+<li id="menu-item-707" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-707"><a href="http://localhost:8000/principal/">FROM THE PRINCIPAL DESK</a></li>
+<li id="menu-item-705" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-705"><a href="http://localhost:8000/about-us/">WHY CHOOSE US?</a></li>
+<li id="menu-item-706" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-706"><a href="http://localhost:8000/about-us/">VISION &#038; MISSION</a></li>
+</ul></div></div>         <div class="foot-nav widget-wrapper widget_nav_menu"><h3 class="widget-title">QUICK LINKS</h3><div class="menu-quick-links-container"><ul id="menu-quick-links" class="menu"><li id="menu-item-710" class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-637 current_page_item menu-item-710"><a href="http://localhost:8000/admission/" aria-current="page">ADMISSION</a></li>
+<li id="menu-item-712" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-712"><a href="http://localhost:8000/faculties/">FACULTIES</a></li>
+<li id="menu-item-713" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-713"><a href="http://localhost:8000/curriculum/">CURRICULUM</a></li>
+<li id="menu-item-711" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-711"><a href="http://localhost:8000/infrastructure/">INFRASTRUCTURE</a></li>
+<li id="menu-item-714" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-714"><a href="http://localhost:8000/contact/">CONTACT US</a></li>
 </ul></div></div>         <div class="foot-nav widget-wrapper widget_text">			<div class="textwidget"><div class="footer-contact-detail">
 <div class="address">
 <div class="inner">
