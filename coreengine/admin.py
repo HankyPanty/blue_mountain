@@ -78,7 +78,7 @@ class AmountAdmin(admin.ModelAdmin):
     readonly_fields = ['total_amount', 'amount_remaining']
     list_display = ('student', 'fee', 'amount_remaining', 'total_amount', 'completed')
     list_filter = ('completed', RemainingGte)
-    # search_fields = ['completed', 'total_amount']
+    search_fields = ['student__first_name', 'student__last_name']
     # actions = [filter_remaining_fees, filter_out_completed_fees]
     def get_queryset(self, request):
         qs = super(AmountAdmin, self).get_queryset(request)
