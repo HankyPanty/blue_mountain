@@ -131,7 +131,7 @@ class PhotoOnline(admin.TabularInline):
     model = file_models.PhotoImage
 
 @admin.register(file_models.Photo)
-class ExamAdmin(admin.ModelAdmin):
+class PhotoAdmin(admin.ModelAdmin):
     inlines = [PhotoOnline]
 
 # 
