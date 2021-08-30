@@ -8,6 +8,8 @@ from django.conf import settings
 
 from datetime import time
 import base64
+import os
+import sys
 
 import templates
 from coreengine import models
@@ -24,6 +26,18 @@ class Banner(APIView):
 		return HttpResponse(image_data, content_type="image/png")
 		# return HttpResponse("This is Home Page.")
 		return render(request, 'admission.html')
+
+class TimeTable(APIView):
+	def get(self, request, banner_name):
+		path = './coreengine/timetables/'+str(banner_name)
+		if os.path.exists(path):
+			with open(path, "r", encoding='ascii', errors='ignore') as excel:
+				data = excel.readline()
+			response = HttpResponse(data, content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+			response['Content-Disposition'] = 'attachment; filename='+str(banner_name)
+			return response 
+		else:
+			return HttpResponse(json.dumps({"no":"excel","no one": "cries"}))
 
 
 class Curriculum(APIView):

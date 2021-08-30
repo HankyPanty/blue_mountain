@@ -40,4 +40,33 @@ class Banner(models.Model):
 	banner_type = models.IntegerField(choices=typeChoices, default=0)
 	image = models.ImageField(upload_to='templates/banner/', height_field=None, width_field=None, max_length=1000, null=True, blank=True)
 	status = models.IntegerField(choices=statusChoices, default=0)
+	def __str__(self):
+		return "image: " + str(self.image.name)
+
+	# def thumb(self):
+	# 	return u'<img src="http://localhost:8000/%s" />' % str(self.image)
+
+class Photo(models.Model):
+	statusChoices = (
+		(1, 'Active'),
+		(0, 'Inactive'),
+	)
+
+	event_name = models.CharField(max_length=20)
+	status = models.IntegerField(choices=statusChoices, default=0)
+	def __str__(self):
+		return str(self.event_name)
+
+class PhotoImage(models.Model):
+	statusChoices = (
+		(1, 'Active'),
+		(0, 'Inactive'),
+	)
+
+	photo_type = models.ForeignKey(Photo, on_delete=models.PROTECT)
+	image = models.ImageField(upload_to='templates/photo/', height_field=None, width_field=None, max_length=1000, null=True, blank=True)
+	status = models.IntegerField(choices=statusChoices, default=0)
+	def __str__(self):
+		return str(self.photo_type.event_name) + str(self.image.name)
+
 

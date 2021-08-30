@@ -66,13 +66,73 @@ class Student(models.Model):
 		return str(self.first_name)+" "+str(self.last_name)
 
 
+class Exam(TimeStampedModel):
+	statusChoices = (
+		(3, 'Closed'),
+		(2, 'Completed'),
+		(1, 'Started'),
+		(0, 'Created'),
+	)
+
+	typeChoices= (
+		(2, 'Endsem'),
+		(1, 'Midsem'),
+		(0, 'UnitTest'),
+		)
+
+	exam_name = models.CharField(max_length=100)
+	exam_type = models.IntegerField(choices=typeChoices)
+	status = models.IntegerField(choices=statusChoices, default=0)
+	wightage = models.IntegerField(default=0)
+	financial_year = models.ForeignKey(FY, on_delete=models.PROTECT)
+
+	def __str__(self):
+		return str(self.financial_year) + ":" + str(self.exam_type)+ " - " +str(self.exam_name)
+
+
+class ExamMark(TimeStampedModel):
+	subjectChoices = (
+		(8, 'GeneralKnolowdge'),
+		(7, 'Computer'),
+		(6, 'Science'),
+		(5, 'Maths'),
+		(4, 'History'),
+		(3, 'Geography'),
+		(2, 'Marathi'),
+		(1, 'Hindi'),
+		(0, 'English'),
+	)
+
+	typeChoices = (
+		(2, 'Endsem'),
+		(1, 'Midsem'),
+		(0, 'UnitTest'),
+		)
+
+	resultChoices = (
+		(1, 'Fail'),
+		(0, 'Pass'),
+		)
+
+	exam = models.ForeignKey(Exam, on_delete=models.PROTECT)
+	subject = models.IntegerField(choices=subjectChoices)
+	student = models.ForeignKey(Student, on_delete=models.PROTECT)
+	marks = models.IntegerField(default=0)
+	total_marks = models.IntegerField(default=20)
+	result = models.IntegerField(choices=resultChoices, null=True, blank=True)
+
+	def __str__(self):
+		return str(self.exam)+ ": " +str(self.student) + " - " + str(self.subject)
+
+
 class Classroom(models.Model):
 	class_name = models.CharField(max_length=20, null=True, blank=True)
 	section_name = models.CharField(max_length=2, null=True, blank=True)
-	timetable = models.CharField(max_length=1000, null=True, blank=True)
-	financial_year = models.ForeignKey(FY, null=True, blank=True, on_delete=models.SET_NULL)
+	timetable = models.FileField(upload_to='coreengine/timetables/', max_length=1000, null=True, blank=True)
+	financial_year = models.ForeignKey(FY, on_delete=models.PROTECT)
 	meet_link = models.CharField(max_length=200, null=True, blank=True)
 	students = models.ManyToManyField(Student, blank=True, help_text="Select all students to be present here")
+	exams = models.ManyToManyField(Exam, blank=True, help_text="Select/Create all tests taken for this class")
 
 	def __str__(self):
 		return str(self.class_name)+ ":" +str(self.section_name) + " - " + str(self.financial_year)

@@ -1,5 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.models import User
+from django import forms
+from dal import autocomplete
 
 from coreengine import models
 from files import models as file_models
@@ -13,6 +15,7 @@ admin.site.site_header = "Blue Mountain Admin"
 
 @admin.register(models.Student)
 class StudentAdmin(admin.ModelAdmin):
+    search_fields = ['first_name', 'last_name']
     def get_queryset(self, request):
         qs = super(StudentAdmin, self).get_queryset(request)
         if not request.user.is_superuser:
@@ -20,20 +23,45 @@ class StudentAdmin(admin.ModelAdmin):
         return qs
     pass
 
+# 
+
 @admin.register(models.StudentAttendance)
 class StudentAttendanceAdmin(admin.ModelAdmin):
     pass
+
+# 
 
 @admin.register(models.StudentComment)
 class StudentCommentAdmin(admin.ModelAdmin):
     pass
 
+# 
+
 @admin.register(models.FY)
 class FYAdmin(admin.ModelAdmin):
     pass
 
+# 
+
+class ClassroomForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(ClassroomForm, self).__init__(*args, **kwargs)
+        if not kwargs.get('instance'):
+            pass
+            # chain_choices = core_helper.get_all_chain_details_tuple()
+            # self.fields['selected_chains'].choices = chain_choices
+
+    exams = forms.ModelChoiceField(queryset=models.Exam.objects.all(),
+                                    widget=autocomplete.ModelSelect2(), required=True)
+    def get_current_fy(self):
+        return self.cleaned_data.get("financial_year")
+
 @admin.register(models.Classroom)
 class ClassroomAdmin(admin.ModelAdmin):
+    # form = ClassroomForm
+    list_filter = ('financial_year','class_name')
+    search_fields = ['students__first_name', 'students__last_name']
+    filter_horizontal = ('students', 'exams')
     def get_queryset(self, request):
         qs = super(ClassroomAdmin, self).get_queryset(request)
         if not request.user.is_superuser:
@@ -41,9 +69,13 @@ class ClassroomAdmin(admin.ModelAdmin):
         return qs
     pass
 
+# 
+
 @admin.register(models.Teacher)
 class TeacherAdmin(admin.ModelAdmin):
     pass
+
+# 
 
 @admin.register(models.Fee)
 class FeeAdmin(admin.ModelAdmin):
@@ -55,6 +87,7 @@ class FeeAdmin(admin.ModelAdmin):
         else:
             return []
 
+# 
 
 class RemainingGte(admin.SimpleListFilter):
     # Human-readable title which will be displayed in the
@@ -86,6 +119,44 @@ class AmountAdmin(admin.ModelAdmin):
             return qs.filter(student__user=request.user)
         return qs
 
+# 
+
 @admin.register(file_models.Banner)
 class BannerAdmin(admin.ModelAdmin):
     pass
+
+# 
+
+class PhotoOnline(admin.TabularInline):
+    model = file_models.PhotoImage
+
+@admin.register(file_models.Photo)
+class ExamAdmin(admin.ModelAdmin):
+    inlines = [PhotoOnline]
+
+# 
+
+class MarksTabularOnline(admin.TabularInline):
+    model = models.ExamMark
+
+@admin.register(models.Exam)
+class ExamAdmin(admin.ModelAdmin):
+    inlines = [MarksTabularOnline]
+
+# 
+
+@admin.register(models.ExamMark)
+class ExamMarkAdmin(admin.ModelAdmin):
+    list_display = ('exam', 'student', 'subject', 'marks', 'total_marks', 'created')
+    list_filter = ('exam', )
+    search_fields = ['student__first_name', 'student__last_name']
+
+    def get_exam(self):
+        return self.exam.__str__
+    def get_queryset(self, request):
+        qs = super(ExamMarkAdmin, self).get_queryset(request)
+        if not request.user.is_superuser:
+            return qs.filter(student__user=request.user)
+        return qs
+
+
