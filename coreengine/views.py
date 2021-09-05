@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 import datetime
-from django.http import HttpResponse,JsonResponse, HttpResponseRedirect
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect, FileResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -24,8 +24,18 @@ class Banner(APIView):
 	def get(self, request, banner_name):
 		image_data = open("./templates/banner/"+str(banner_name), "rb").read()
 		return HttpResponse(image_data, content_type="image/png")
-		# return HttpResponse("This is Home Page.")
-		return render(request, 'admission.html')
+
+class Pdfs(APIView):
+	def get(self, request, pdf_name):
+		path = "./templates/pdf/"+str(pdf_name)
+		if os.path.exists(path):
+			with open(path, "r", encoding='ascii', errors='ignore') as excel:
+				data = excel.readline()
+			response = HttpResponse(data, content_type='application/pdf')
+			response['Content-Disposition'] = 'attachment; filename='+str(pdf_name)
+			return response 
+		else:
+			return HttpResponse(json.dumps({"no":"excel","no one": "cries"}))
 
 class TimeTable(APIView):
 	def get(self, request, banner_name):

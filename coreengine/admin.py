@@ -16,6 +16,7 @@ admin.site.site_header = "Blue Mountain Admin"
 @admin.register(models.Student)
 class StudentAdmin(admin.ModelAdmin):
     search_fields = ['first_name', 'last_name']
+    readonly_fields = ['user']
     def get_queryset(self, request):
         qs = super(StudentAdmin, self).get_queryset(request)
         if not request.user.is_superuser:
@@ -56,12 +57,48 @@ class ClassroomForm(forms.ModelForm):
     def get_current_fy(self):
         return self.cleaned_data.get("financial_year")
 
+class activeFY(admin.SimpleListFilter):
+    title = ('active_class')
+    parameter_name = 'financial_year'
+
+    def lookups(self, request, model_admin):
+        return (
+            # ('active', ('All')),
+            (None, ('Active')),
+            ('inactive', ('Inactive')),
+            # ('all', ('All')),
+        )
+    def queryset(self, request, queryset):
+        if self.value() == None:
+            return queryset.filter(financial_year__status = 1)
+        if self.value() == 'inactive':
+            return queryset.filter(financial_year__status = 0)
+        else:
+            return queryset
+
+
 @admin.register(models.Classroom)
 class ClassroomAdmin(admin.ModelAdmin):
     # form = ClassroomForm
     list_filter = ('financial_year','class_name')
     search_fields = ['students__first_name', 'students__last_name']
-    filter_horizontal = ('students', 'exams')
+    filter_horizontal = ('students', )
+    def get_readonly_fields(self, request, obj=None):
+        print(obj.financial_year)
+        if not obj or obj.financial_year.status == 1:
+            return []
+        else:
+            return ['class_name', 'timetable', 'students', 'meet_link', 'section_name', 'financial_year']
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        # print(db_field)
+        # obj = kwargs.get("obj")
+        # studs = []
+        # other_classes = models.Classroom.objects.filter(financial_year__status = 1)
+        # for clas in other_classes:
+        #     studs += list(clas.students.all())
+        # other_students = list(set(studs))
+        kwargs["queryset"] = models.Student.objects.exclude(status=0)
+        return super(ClassroomAdmin, self).formfield_for_manytomany(db_field, request, **kwargs)
     def get_queryset(self, request):
         qs = super(ClassroomAdmin, self).get_queryset(request)
         if not request.user.is_superuser:
@@ -79,7 +116,7 @@ class TeacherAdmin(admin.ModelAdmin):
 
 @admin.register(models.Fee)
 class FeeAdmin(admin.ModelAdmin):
-    list_display = ('fees_type', 'financial_year', 'amountINR', 'created')
+    list_display = ('fees_type', 'description', 'financial_year', 'amountINR', 'created')
 
     def get_readonly_fields(self, request, obj=None):
         if obj:
@@ -106,18 +143,28 @@ class RemainingGte(admin.SimpleListFilter):
         if self.value() == '1':
             return queryset.filter(amount_remaining = 0)
 
+# 
+
+class AmountDetailsinline(admin.TabularInline):
+    model = models.AmountDetails
+    def has_change_permission(self, request, obj=None):
+        return False
+
 @admin.register(models.Amount)
 class AmountAdmin(admin.ModelAdmin):
-    readonly_fields = ['total_amount', 'amount_remaining']
-    list_display = ('student', 'fee', 'amount_remaining', 'total_amount', 'completed')
+    readonly_fields = ['student', 'fee', 'total_amount', 'amount_remaining', 'amount_paid']
+    list_display = ('student', 'fee', 'amount_remaining', 'total_amount', 'completed', 'created', 'modified')
     list_filter = ('completed', RemainingGte)
     search_fields = ['student__first_name', 'student__last_name']
+    inlines = [AmountDetailsinline]
     # actions = [filter_remaining_fees, filter_out_completed_fees]
     def get_queryset(self, request):
         qs = super(AmountAdmin, self).get_queryset(request)
         if not request.user.is_superuser:
             return qs.filter(student__user=request.user)
         return qs
+    def has_add_permission(self, request, obj=None):
+        return False
 
 # 
 
@@ -142,21 +189,4 @@ class MarksTabularOnline(admin.TabularInline):
 @admin.register(models.Exam)
 class ExamAdmin(admin.ModelAdmin):
     inlines = [MarksTabularOnline]
-
-# 
-
-@admin.register(models.ExamMark)
-class ExamMarkAdmin(admin.ModelAdmin):
-    list_display = ('exam', 'student', 'subject', 'marks', 'total_marks', 'created')
-    list_filter = ('exam', )
-    search_fields = ['student__first_name', 'student__last_name']
-
-    def get_exam(self):
-        return self.exam.__str__
-    def get_queryset(self, request):
-        qs = super(ExamMarkAdmin, self).get_queryset(request)
-        if not request.user.is_superuser:
-            return qs.filter(student__user=request.user)
-        return qs
-
 
