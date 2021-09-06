@@ -225,18 +225,23 @@ class Teacher(TimeStampedModel):
 	blood_group = models.CharField(max_length=10, null=True, blank=True)
 	aadhar_no = models.CharField(max_length=12, null=True, blank=True)
 
+	def __str__(self):
+		return str(self.first_name)+" "+str(self.last_name)
+
 	def save(self, *args, **kwargs):
 		if not self.pk:
-			username = last_name+'.'+first_name
+			username = self.last_name+'.'+self.first_name
 			user = list(User.objects.filter(username=username))
 			if user:
-				username = last_name+'_'+first_name
+				username = self.last_name+'_'+self.first_name
 			user = User.objects.create(username=username, password=str(self.dob), is_staff=1)
 			try:
 				user.groups.add(Group.objects.get(name='teacher-login'))
+				user.save()
+				self.user = user
 			except:
 				print("ERROR in assigning Group to Teacher-"+str(self.first_name))
-			user.save()
+		super(Teacher, self).save(*args, **kwargs)
 
 
 def fees_post_save(sender, instance, created, **kwargs):

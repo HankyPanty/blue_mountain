@@ -110,6 +110,7 @@ class ClassroomAdmin(admin.ModelAdmin):
 
 @admin.register(models.Teacher)
 class TeacherAdmin(admin.ModelAdmin):
+    readonly_fields = ['user']
     pass
 
 # 
