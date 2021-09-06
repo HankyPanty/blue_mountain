@@ -19,7 +19,7 @@ class StudentAdmin(admin.ModelAdmin):
     readonly_fields = ['user']
     def get_queryset(self, request):
         qs = super(StudentAdmin, self).get_queryset(request)
-        if not request.user.is_superuser:
+        if request.user.groups.filter(name='student-login'):
             return qs.filter(user=request.user)
         return qs
     pass
@@ -101,7 +101,7 @@ class ClassroomAdmin(admin.ModelAdmin):
         return super(ClassroomAdmin, self).formfield_for_manytomany(db_field, request, **kwargs)
     def get_queryset(self, request):
         qs = super(ClassroomAdmin, self).get_queryset(request)
-        if not request.user.is_superuser:
+        if request.user.groups.filter(name='student-login'):
             return qs.filter(students__user=request.user)
         return qs
     pass
@@ -161,7 +161,7 @@ class AmountAdmin(admin.ModelAdmin):
     # actions = [filter_remaining_fees, filter_out_completed_fees]
     def get_queryset(self, request):
         qs = super(AmountAdmin, self).get_queryset(request)
-        if not request.user.is_superuser:
+        if request.user.groups.filter(name='student-login'):
             return qs.filter(student__user=request.user)
         return qs
     def has_add_permission(self, request, obj=None):
