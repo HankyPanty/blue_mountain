@@ -259,7 +259,7 @@ def fees_post_save(sender, instance, created, **kwargs):
 		if classroom:
 			students=classroom.students
 		if student:
-			students=Student.objects.filter(student=student)
+			students=Student.objects.filter(id=student.id)
 
 		students=students.filter(status=1)
 
