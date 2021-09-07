@@ -181,7 +181,7 @@ class Exam(TimeStampedModel):
 	weightage = models.IntegerField(default=0)
 
 	def __str__(self):
-		return str(self.classroom) + "::" + str(self.exam_type)+ "::" + str(dict(self.subjectChoices).get(self.subject))+ " - " +str(self.exam_name)
+		return str(self.classroom) + " " + str(dict(self.typeChoices).get(self.exam_type))+ "::" + str(dict(self.subjectChoices).get(self.subject))+ " -" +str(self.exam_name)
 
 signals.post_save.connect(exam_post_save, sender=Exam)
 
@@ -193,6 +193,7 @@ class ExamMark(TimeStampedModel):
 		)
 
 	resultChoices = (
+		(2, 'Absent'),
 		(1, 'Fail'),
 		(0, 'Pass'),
 		)
@@ -203,7 +204,12 @@ class ExamMark(TimeStampedModel):
 	result = models.IntegerField(choices=resultChoices, null=True, blank=True)
 
 	def __str__(self):
-		return str(self.exam)+ ": " +str(self.student) + " - " + str(self.subject)
+		return str(self.exam)+ ": " +str(self.student)
+
+	def save(self, *args, **kwargs):
+		if self.student not in self.exam.classroom.students.all():
+			raise ValidationError("STUDENT NOT in this CLASS, his marks cannot be added in this exam.")
+		super(ExamMark, self).save(*args, **kwargs)
 
 
 class Teacher(TimeStampedModel):

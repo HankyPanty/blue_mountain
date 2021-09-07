@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.models import User
+from django.urls import resolve
 from django import forms
 from dal import autocomplete
 
@@ -186,6 +187,17 @@ class PhotoAdmin(admin.ModelAdmin):
 
 class MarksTabularOnline(admin.TabularInline):
     model = models.ExamMark
+    fields = ('student', 'marks', 'result', )
+    def get_formset(self, request, obj=None, **kwargs):
+        self.classroom = None
+        if obj:
+            self.classroom = obj.classroom
+        return super(MarksTabularOnline, self).get_formset(request, obj, **kwargs)
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == 'student' and self.classroom:
+            kwargs["queryset"] = self.classroom.students.all()
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
 
 @admin.register(models.Exam)
 class ExamAdmin(admin.ModelAdmin):
