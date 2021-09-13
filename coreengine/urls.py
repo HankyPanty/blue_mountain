@@ -11,8 +11,10 @@ urlpatterns = [
 	path('founders/', core_views.Founders.as_view(), name='faculties'),
 	path('principal/', core_views.Principal.as_view(), name='faculties'),
 	path('infrastructure/', core_views.Infrastructure.as_view(), name='faculties'),
-	path('contact/', core_views.Contact.as_view(), name='faculties'),
+	path('contact/', core_views.Admission.as_view(), name='faculties'),
 	path('about-us/', core_views.AboutUs.as_view(), name='faculties'),
+	path('gallery/', core_views.Gallery.as_view(), name='faculties'),
+	path('social/', core_views.Social.as_view(), name='faculties'),
 
 	path('templates/banner/<str:banner_name>', core_views.Banner.as_view(), name='banner'),
 	path('templates/pdf/<str:pdf_name>', core_views.Pdfs.as_view(), name='pdf'),

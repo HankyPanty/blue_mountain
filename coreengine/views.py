@@ -77,6 +77,18 @@ class Admission(APIView):
 		return render(request, 'admission.html')
 
 
+class Gallery(APIView):
+	def get(self, request):
+		# return HttpResponse("This is Home Page.")
+		return render(request, 'gallery.html')
+
+
+class Social(APIView):
+	def get(self, request):
+		# return HttpResponse("This is Home Page.")
+		return render(request, 'social.html')
+
+
 class Infrastructure(APIView):
 	def get(self, request):
 		# return HttpResponse("This is Home Page.")
