@@ -17,6 +17,7 @@ urlpatterns = [
 	path('social/', core_views.Social.as_view(), name='faculties'),
 
 	path('templates/banner/<str:banner_name>', core_views.Banner.as_view(), name='banner'),
+	path('templates/photo/<str:banner_name>', core_views.Photo.as_view(), name='banner'),
 	path('templates/pdf/<str:pdf_name>', core_views.Pdfs.as_view(), name='pdf'),
 	path('coreengine/timetables/<str:banner_name>', core_views.TimeTable.as_view(), name='banner'),
 

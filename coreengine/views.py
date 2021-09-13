@@ -13,7 +13,7 @@ import sys
 
 import templates
 from coreengine import models
-
+from files import models as file_models
 
 class Home(APIView):
 	def get(self, request):
@@ -23,6 +23,11 @@ class Home(APIView):
 class Banner(APIView):
 	def get(self, request, banner_name):
 		image_data = open("./templates/banner/"+str(banner_name), "rb").read()
+		return HttpResponse(image_data, content_type="image/png")
+
+class Photo(APIView):
+	def get(self, request, banner_name):
+		image_data = open("./templates/photo/"+str(banner_name), "rb").read()
 		return HttpResponse(image_data, content_type="image/png")
 
 class Pdfs(APIView):
@@ -79,8 +84,16 @@ class Admission(APIView):
 
 class Gallery(APIView):
 	def get(self, request):
+		data = {}
+		images_urls = list(file_models.PhotoImage.objects.filter(status=1, photo_type__status=1).values_list('photo_type__event_name', 'image'))
+		for images_url in images_urls:
+			if data.get(images_url[0], None):
+				data[images_url[0]].append(images_url[1])
+			else:
+				data[images_url[0]] = [images_url[1]]
+
 		# return HttpResponse("This is Home Page.")
-		return render(request, 'gallery.html')
+		return render(request, 'gallery.html', {'event_images':data})
 
 
 class Social(APIView):
