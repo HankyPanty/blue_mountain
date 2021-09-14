@@ -559,14 +559,12 @@ img:hover{
 			<p>&nbsp;</p>
 
 {% for item, val in event_images.items %}
-<div>
-    <h3> {{item}}</h3>
+    <div><h3> {{item}}</h3></div>
     {% for image in val %}
     <div class="box-images">
     <img src="http://www.bluevalleyenglishschool.in/{{image}}"></div>
     {% endfor %}
-    <p><br><br></p>
-</div>
+    <div><p><br><br></p></div>
 {% endfor %}
 
 		</div>
