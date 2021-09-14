@@ -558,17 +558,16 @@ img:hover{
 		<div class="wpb_wrapper">
 			<p>&nbsp;</p>
 
-{% for item in event_images %}
+{% for item, val in event_images.items %}
 
     <h3> {{item}}</h3>
-    {% for imagee in event_images.values %}
-    {% for image in imagee %}
+    {% for image in val %}
     <div class="box-images">
     <img src="http://www.bluevalleyenglishschool.in/{{image}}"></div>
     {% endfor %}
-    {% endfor %}
 
 {% endfor %}
+
 		</div>
 	</div>
 </div></div></div></div></section><section id="" class="wpb_row vg_fixed  "  ><div class="container"><div class="wpb_column vc_column_container vc_col-sm-12"><div class="vc_column-inner"><div class="wpb_wrapper"></div></div></div></div></section>

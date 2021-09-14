@@ -106,8 +106,8 @@ class Classroom(models.Model):
 		for classroom in classrooms:
 			all_studs += classroom.students.all()
 
-		print(studs)
-		print(all_studs)
+		# print(studs)
+		# print(all_studs)
 		for stud in studs:
 			if stud in all_studs:
 				raise ValidationError(stud.first_name + " is already in another class.")

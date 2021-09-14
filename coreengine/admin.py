@@ -85,13 +85,11 @@ class ClassroomAdmin(admin.ModelAdmin):
     search_fields = ['students__first_name', 'students__last_name']
     filter_horizontal = ('students', )
     def get_readonly_fields(self, request, obj=None):
-        print(obj.financial_year)
         if not obj or obj.financial_year.status == 1:
             return []
         else:
             return ['class_name', 'timetable', 'students', 'meet_link', 'section_name', 'financial_year']
     def formfield_for_manytomany(self, db_field, request, **kwargs):
-        # print(db_field)
         # obj = kwargs.get("obj")
         # studs = []
         # other_classes = models.Classroom.objects.filter(financial_year__status = 1)
