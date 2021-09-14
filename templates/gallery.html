@@ -548,23 +548,20 @@ img:hover{
   </div>
 </div>
 
-<!-- <section class="testimonial-outer padding-lg"> -->
 <section id="" class="wpb_row vg_fixed  "  ><div class="container"><div class="wpb_column vc_column_container vc_col-sm-12"><div class="vc_column-inner"><div class="wpb_wrapper">
-<!-- <div class="title_area ">
-    <h2><span></span> ADMISSION PROCEDURE</h2>
-</div> -->
-</div></div></div></div></section><section id="" class="wpb_row vg_fixed  "  ><div class="container"><div class="wpb_column vc_column_container vc_col-sm-12"><div class="vc_column-inner"><div class="wpb_wrapper">
 	<div class="wpb_text_column wpb_content_element " >
 		<div class="wpb_wrapper">
 			<p>&nbsp;</p>
 
 {% for item, val in event_images.items %}
-    <div><h3> {{item}}</h3></div>
+<section><div class="container">
+    <h3> {{item}}</h3>
     {% for image in val %}
     <div class="box-images">
     <img src="http://www.bluevalleyenglishschool.in/{{image}}"></div>
     {% endfor %}
-    <div><p><br><br></p></div>
+    <p><br><br></p>
+</div></section>
 {% endfor %}
 
 		</div>
