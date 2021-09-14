@@ -14,7 +14,7 @@ from model_utils.models import TimeStampedModel
 from django.db import transaction
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.utils import timezone
 # from django_fsm import transition, FSMIntegerField, get_available_FIELD_transitions, TransitionNotAllowed
 from django.db.models import signals
@@ -49,7 +49,8 @@ class Student(models.Model):
 	first_name = models.CharField(max_length=100)
 	last_name = models.CharField(max_length=20)
 	user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
-	status = models.IntegerField(choices=statusChoices, default=0)
+	status = models.IntegerField(choices=statusChoices, default=1)
+	grn_number = models.IntegerField(null=True, blank=True)
 	# call_time_end = models.DateTimeField()
 	fathers_name = models.CharField(max_length=20, null=True, blank=True)
 	mothers_name = models.CharField(max_length=20, null=True, blank=True)
@@ -65,64 +66,22 @@ class Student(models.Model):
 	def __str__(self):
 		return str(self.first_name)+" "+str(self.last_name)
 
+	def save(self, *args, **kwargs):
+		if not self.pk:
+			username = self.last_name+'.'+self.first_name
+			user = list(User.objects.filter(username=username))
+			if user:
+				username = self.last_name+'_'+self.first_name
+			user = User.objects.create(username=username, password=str(self.dob), is_staff=1)
+			try:
+				user.groups.add(Group.objects.get(name='student-login'))
+			except:
+				print("ERROR in assigning Group to Sstudent-"+str(self.first_name))
+			user.save()
+			self.user = user
+		super(Student, self).save(*args, **kwargs)
 
-class Exam(TimeStampedModel):
-	statusChoices = (
-		(3, 'Closed'),
-		(2, 'Completed'),
-		(1, 'Started'),
-		(0, 'Created'),
-	)
-
-	typeChoices= (
-		(2, 'Endsem'),
-		(1, 'Midsem'),
-		(0, 'UnitTest'),
-		)
-
-	exam_name = models.CharField(max_length=100)
-	exam_type = models.IntegerField(choices=typeChoices)
-	status = models.IntegerField(choices=statusChoices, default=0)
-	wightage = models.IntegerField(default=0)
-	financial_year = models.ForeignKey(FY, on_delete=models.PROTECT)
-
-	def __str__(self):
-		return str(self.financial_year) + ":" + str(self.exam_type)+ " - " +str(self.exam_name)
-
-
-class ExamMark(TimeStampedModel):
-	subjectChoices = (
-		(8, 'GeneralKnolowdge'),
-		(7, 'Computer'),
-		(6, 'Science'),
-		(5, 'Maths'),
-		(4, 'History'),
-		(3, 'Geography'),
-		(2, 'Marathi'),
-		(1, 'Hindi'),
-		(0, 'English'),
-	)
-
-	typeChoices = (
-		(2, 'Endsem'),
-		(1, 'Midsem'),
-		(0, 'UnitTest'),
-		)
-
-	resultChoices = (
-		(1, 'Fail'),
-		(0, 'Pass'),
-		)
-
-	exam = models.ForeignKey(Exam, on_delete=models.PROTECT)
-	subject = models.IntegerField(choices=subjectChoices)
-	student = models.ForeignKey(Student, on_delete=models.PROTECT)
-	marks = models.IntegerField(default=0)
-	total_marks = models.IntegerField(default=20)
-	result = models.IntegerField(choices=resultChoices, null=True, blank=True)
-
-	def __str__(self):
-		return str(self.exam)+ ": " +str(self.student) + " - " + str(self.subject)
+# def student_added(sender, instance, pk_set, **kwargs):
 
 
 class Classroom(models.Model):
@@ -132,11 +91,30 @@ class Classroom(models.Model):
 	financial_year = models.ForeignKey(FY, on_delete=models.PROTECT)
 	meet_link = models.CharField(max_length=200, null=True, blank=True)
 	students = models.ManyToManyField(Student, blank=True, help_text="Select all students to be present here")
-	exams = models.ManyToManyField(Exam, blank=True, help_text="Select/Create all tests taken for this class")
+	# exams = models.ManyToManyField(Exam, blank=True, help_text="Select/Create all tests taken for this class")
 
 	def __str__(self):
-		return str(self.class_name)+ ":" +str(self.section_name) + " - " + str(self.financial_year)
+		return str(self.class_name)+ ":" +str(self.section_name) + " " + str(self.financial_year)
 
+	def save(self, *args, **kwargs):
+		studs = self.students.all()
+		all_studs = []
+		if self.pk:
+			classrooms = Classroom.objects.filter(financial_year__status=1).exclude(id = self.pk)
+		else:
+			classrooms = Classroom.objects.filter(financial_year__status=1)
+		for classroom in classrooms:
+			all_studs += classroom.students.all()
+
+		# print(studs)
+		# print(all_studs)
+		for stud in studs:
+			if stud in all_studs:
+				raise ValidationError(stud.first_name + " is already in another class.")
+		super(Classroom, self).save(*args, **kwargs)
+
+
+# signals.m2m_changed.connect(student_added, sender=Classroom.students.through)
 
 class StudentAttendance(TimeStampedModel):
 	student = models.ForeignKey(Student, on_delete=models.SET_NULL, null=True)
@@ -162,6 +140,76 @@ class StudentComment(models.Model):
 	resolved = models.IntegerField(choices=statusChoices, default=0)
 
 
+def exam_post_save(sender, instance, created, **kwargs):
+	if created:
+		students = instance.classroom.students
+		for stud in students:
+			ExamMark.objects.create(exam=instance, student=stud, marks=0)
+
+class Exam(TimeStampedModel):
+	subjectChoices = (
+		(8, 'GeneralKnolowdge'),
+		(7, 'Computer'),
+		(6, 'Science'),
+		(5, 'Maths'),
+		(4, 'History'),
+		(3, 'Geography'),
+		(2, 'Marathi'),
+		(1, 'Hindi'),
+		(0, 'English'),
+	)
+
+	statusChoices = (
+		(3, 'Closed'),
+		(2, 'Completed'),
+		(1, 'Started'),
+		(0, 'Created'),
+	)
+
+	typeChoices= (
+		(2, 'Endsem'),
+		(1, 'Midsem'),
+		(0, 'UnitTest'),
+		)
+
+	exam_name = models.CharField(max_length=100)
+	exam_type = models.IntegerField(choices=typeChoices)
+	classroom = models.ForeignKey(Classroom, on_delete=models.PROTECT)
+	subject = models.IntegerField(choices=subjectChoices)
+	status = models.IntegerField(choices=statusChoices, default=0)
+	total_marks = models.IntegerField(default=20)
+	weightage = models.IntegerField(default=0)
+
+	def __str__(self):
+		return str(self.classroom) + " " + str(dict(self.typeChoices).get(self.exam_type))+ "::" + str(dict(self.subjectChoices).get(self.subject))+ " -" +str(self.exam_name)
+
+signals.post_save.connect(exam_post_save, sender=Exam)
+
+class ExamMark(TimeStampedModel):
+	typeChoices = (
+		(2, 'Endsem'),
+		(1, 'Midsem'),
+		(0, 'UnitTest'),
+		)
+
+	resultChoices = (
+		(2, 'Absent'),
+		(1, 'Fail'),
+		(0, 'Pass'),
+		)
+
+	exam = models.ForeignKey(Exam, on_delete=models.PROTECT)
+	student = models.ForeignKey(Student, on_delete=models.PROTECT)
+	marks = models.IntegerField(default=0)
+	result = models.IntegerField(choices=resultChoices, null=True, blank=True)
+
+	def __str__(self):
+		return str(self.exam)+ ": " +str(self.student)
+
+	def save(self, *args, **kwargs):
+		if self.student not in self.exam.classroom.students.all():
+			raise ValidationError("STUDENT NOT in this CLASS, his marks cannot be added in this exam.")
+		super(ExamMark, self).save(*args, **kwargs)
 
 
 class Teacher(TimeStampedModel):
@@ -174,15 +222,32 @@ class Teacher(TimeStampedModel):
 	last_name = models.CharField(max_length=20)
 	user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
 	mobile_no = models.CharField(max_length=10, null=True, blank=True)
-	status = models.IntegerField(choices=statusChoices, default=0)
+	status = models.IntegerField(choices=statusChoices, default=1)
 
 	address = models.CharField(max_length=200, null=True, blank=True)
 	contact_no = models.CharField(max_length=10, null=True, blank=True)
 	emergenct_contact = models.CharField(max_length=10, null=True, blank=True)
-	dob = models.DateField(null=True, blank=True)
+	dob = models.DateField()
 	blood_group = models.CharField(max_length=10, null=True, blank=True)
 	aadhar_no = models.CharField(max_length=12, null=True, blank=True)
 
+	def __str__(self):
+		return str(self.first_name)+" "+str(self.last_name)
+
+	def save(self, *args, **kwargs):
+		if not self.pk:
+			username = self.last_name+'.'+self.first_name
+			user = list(User.objects.filter(username=username))
+			if user:
+				username = self.last_name+'_'+self.first_name
+			user = User.objects.create(username=username, password=str(self.dob), is_staff=1)
+			try:
+				user.groups.add(Group.objects.get(name='teacher-login'))
+				user.save()
+				self.user = user
+			except:
+				print("ERROR in assigning Group to Teacher-"+str(self.first_name))
+		super(Teacher, self).save(*args, **kwargs)
 
 
 def fees_post_save(sender, instance, created, **kwargs):
@@ -194,7 +259,7 @@ def fees_post_save(sender, instance, created, **kwargs):
 		if classroom:
 			students=classroom.students
 		if student:
-			students=Student.objects.filter(student=student)
+			students=Student.objects.filter(id=student.id)
 
 		students=students.filter(status=1)
 
@@ -222,9 +287,10 @@ class Fee(TimeStampedModel):
 	classroom = models.ForeignKey(Classroom, on_delete=models.SET_NULL, null=True, blank=True, help_text="Select Only ONE")
 	student = models.ForeignKey(Student, on_delete=models.SET_NULL, null=True, blank=True, help_text="Select Only ONE")
 	financial_year = models.ForeignKey(FY, on_delete=models.PROTECT)
+	add_to_future_students = models.IntegerField(choices=((1,'yes'),(0,'no')), default=1, help_text="Applicable For Class level Fees")
 
 	def __str__(self):
-		return str(dict(self.fees_type_choices).get(self.fees_type)) +": "+ str(self.financial_year)
+		return str(dict(self.fees_type_choices).get(self.fees_type)) +":" + self.description + ": "+ str(self.financial_year)
 
 	def save(self, *args, **kwargs):
 		if self.student and self.classroom:
@@ -235,14 +301,13 @@ class Fee(TimeStampedModel):
 signals.post_save.connect(fees_post_save, sender=Fee)
 
 
-
 class Amount(TimeStampedModel):
 	statusChoices = (
 		(1, 'Completed'),
 		(0, 'Pending'),
 	)
-	fee = models.ForeignKey(Fee, on_delete=models.SET_NULL, null=True)
-	student = models.ForeignKey(Student, on_delete=models.SET_NULL, null=True)
+	fee = models.ForeignKey(Fee, on_delete=models.PROTECT)
+	student = models.ForeignKey(Student, on_delete=models.PROTECT)
 	total_amount = models.IntegerField()
 	amount_paid = models.IntegerField()
 	amount_remaining = models.IntegerField()
@@ -257,4 +322,25 @@ class Amount(TimeStampedModel):
 		if not self.amount_remaining:
 			self.completed = 1
 		super(Amount, self).save(*args, **kwargs)
+
+
+class AmountDetails(TimeStampedModel):
+	typeChoices = (
+		(2, 'Card'),
+		(1, 'Gpay'),
+		(0, 'Cash'),
+		)
+
+	amount = models.ForeignKey(Amount, on_delete=models.SET_NULL, null=True)
+	amount_paid = models.IntegerField(default=0)
+	payement_type = models.IntegerField(choices=typeChoices, default=0)
+
+	def __str__(self):
+		return str(self.amount)+ " - " + str(self.amount_paid)
+
+	def save(self, *args, **kwargs):
+		amount_paid_current = self.amount.amount_paid + self.amount_paid
+		self.amount.amount_paid = amount_paid_current
+		self.amount.save()
+		super(AmountDetails, self).save(*args, **kwargs)
 
