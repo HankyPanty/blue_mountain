@@ -2,6 +2,9 @@ from django.contrib import admin
 from django.contrib.auth.models import User
 from django.urls import resolve
 from django import forms
+from django.urls import path, include
+from django.http import HttpResponse
+from django.db.models import Q, F, Sum, Value, ForeignKey, IntegerField, CharField, PROTECT
 from dal import autocomplete
 
 from coreengine import models
@@ -158,13 +161,44 @@ class AmountAdmin(admin.ModelAdmin):
     search_fields = ['student__first_name', 'student__last_name']
     inlines = [AmountDetailsinline]
     # actions = [filter_remaining_fees, filter_out_completed_fees]
+    change_list_template = 'admin/total_amounts_template.html'
     def get_queryset(self, request):
         qs = super(AmountAdmin, self).get_queryset(request)
         if request.user.groups.filter(name='student-login'):
             return qs.filter(student__user=request.user)
         return qs
+
     def has_add_permission(self, request, obj=None):
         return False
+
+    # def changelist_view(self, request, extra_context=None):
+    #     response = super(AmountAdmin, self).changelist_view(request)
+    #     try:
+    #         qs = response.context_data['cl'].queryset
+    #     except:
+    #         return response
+    #     total_amount = qs.aggregate(Sum('total_amount'))['total_amount__sum']
+    #     total_amount_received = qs.aggregate(Sum('amount_paid'))['amount_paid__sum']
+    #     total_amount_pending = qs.filter(completed=0).aggregate(Sum('amount_remaining'))['amount_remaining__sum']
+    #     total_installments_pending = qs.filter(completed=0).count()
+
+    #     response.context_data['cl'].queryset = list(qs)
+    #     return response
+
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path('total_amounts/', self.get_total_amounts)
+        ]
+        return custom_urls + urls
+
+    def get_total_amounts(self, request):
+        qs = self.get_queryset(request)
+        total_amount = qs.aggregate(Sum('total_amount'))['total_amount__sum']
+        total_amount_received = qs.aggregate(Sum('amount_paid'))['amount_paid__sum']
+        total_amount_pending = qs.filter(completed=0).aggregate(Sum('amount_remaining'))['amount_remaining__sum']
+        total_installments_pending = qs.filter(completed=0).count()
+        return HttpResponse("Total expected amount: " + str(total_amount) + "<br/>Total received amount: " + str(total_amount_received) + "<br/>Pending amount: " + str(total_amount_pending) + "<br/>Total installments to track: " + str(total_installments_pending) + "<br/>")
 
 # 
 

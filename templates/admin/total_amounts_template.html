@@ -1,0 +1,18 @@
+{% extends 'admin/change_list.html' %}
+{% block object-tools %}
+{{ block.super }}
+<script>
+function loadTotals() {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            document.getElementById("footer").innerHTML = this.responseText;
+        }
+    }
+    xhttp.open("GET", "total_amounts/", true);
+    xhttp.send();
+}
+loadTotals();
+</script>
+<!-- <div id='total_amounts'></div> -->
+{% endblock object-tools %}
