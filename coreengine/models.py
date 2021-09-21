@@ -39,6 +39,12 @@ class FY(models.Model):
 	def __str__(self):
 		return str(self.start_year)+ ':' +str(self.end_year)
 
+	def save(self, *args, **kwargs):
+		if self.status == 1:
+			if list(FY.objects.filter(status=1)):
+				raise ValidationError("Cannot have more than one active Financial Year")
+		super(FY, self).save(*args, **kwargs)
+
 
 class Student(models.Model):
 	statusChoices = (
@@ -90,31 +96,33 @@ class Classroom(models.Model):
 	timetable = models.FileField(upload_to='coreengine/timetables/', max_length=1000, null=True, blank=True)
 	financial_year = models.ForeignKey(FY, on_delete=models.PROTECT)
 	meet_link = models.CharField(max_length=200, null=True, blank=True)
-	students = models.ManyToManyField(Student, blank=True, help_text="Select all students to be present here")
+	# students = models.ManyToManyField(Student, blank=True, help_text="Select all students to be present here")
 	# exams = models.ManyToManyField(Exam, blank=True, help_text="Select/Create all tests taken for this class")
 
+	@property
+	def students(self):
+		studs = ClassroomStudent.objects.filter(classroom_id=self.pk).values_list('student_id', flat=True)
+		return Student.objects.filter(id__in = studs)
+
 	def __str__(self):
-		return str(self.class_name)+ ":" +str(self.section_name) + " " + str(self.financial_year)
+		return str(self.class_name)+ ":" +str(self.section_name) + " " + str(self.financial_year.start_year)
 
 	def save(self, *args, **kwargs):
-		studs = self.students.all()
-		all_studs = []
-		if self.pk:
-			classrooms = Classroom.objects.filter(financial_year__status=1).exclude(id = self.pk)
-		else:
-			classrooms = Classroom.objects.filter(financial_year__status=1)
-		for classroom in classrooms:
-			all_studs += classroom.students.all()
-
-		# print(studs)
-		# print(all_studs)
-		for stud in studs:
-			if stud in all_studs:
-				raise ValidationError(stud.first_name + " is already in another class.")
 		super(Classroom, self).save(*args, **kwargs)
 
+class ClassroomStudent(models.Model):
+	classroom = models.ForeignKey(Classroom, on_delete=models.PROTECT)
+	student = models.ForeignKey(Student, on_delete=models.PROTECT)
+	roll_no = models.IntegerField(null=True, blank=True)
+	report_card = models.ImageField(upload_to='coreengine/report/', max_length=1000, null=True, blank=True)
 
-# signals.m2m_changed.connect(student_added, sender=Classroom.students.through)
+	def __str__(self):
+		return str(self.classroom)+ ": " +str(self.student)
+
+	def save(self, *args, **kwargs):
+		if ClassroomStudent.objects.filter(student=self.student, classroom__financial_year = self.classroom.financial_year):
+			raise ValidationError(self.student.first_name + " is already in same or another class of this year.")
+		super(ClassroomStudent, self).save(*args, **kwargs)
 
 class StudentAttendance(TimeStampedModel):
 	student = models.ForeignKey(Student, on_delete=models.SET_NULL, null=True)
@@ -290,7 +298,7 @@ class Fee(TimeStampedModel):
 	add_to_future_students = models.IntegerField(choices=((1,'yes'),(0,'no')), default=1, help_text="Applicable For Class level Fees")
 
 	def __str__(self):
-		return str(dict(self.fees_type_choices).get(self.fees_type)) +":" + self.description + ": "+ str(self.financial_year)
+		return str(dict(self.fees_type_choices).get(self.fees_type)) +":" + self.description + ": "+ str(self.financial_year.start_year)
 
 	def save(self, *args, **kwargs):
 		if self.student and self.classroom:
@@ -344,3 +352,16 @@ class AmountDetails(TimeStampedModel):
 		self.amount.save()
 		super(AmountDetails, self).save(*args, **kwargs)
 
+
+def classroomstudent_post_save(sender, instance, created, **kwargs):
+	students = list(instance.classroom.students.values_list('id', flat=True))
+	fee_applicable = Fee.objects.filter(classroom=instance.classroom, add_to_future_students=1)
+	for fee in fee_applicable:
+		already_studs = list(Amount.objects.filter(fee=fee).values_list('student_id', flat=True))
+		rem_studs = list(set(students)-set(already_studs))
+		for stud in rem_studs:
+			Amount.objects.create(fee=fee, student=stud, total_amount=fee.amountINR,
+								   amount_paid=0, amount_remaining=fee.amountINR,
+								   completed=0, remark="Auto Created")
+
+signals.post_save.connect(classroomstudent_post_save, sender=ClassroomStudent)
