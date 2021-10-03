@@ -80,31 +80,52 @@ class activeFY(admin.SimpleListFilter):
         else:
             return queryset
 
+class ClassroomStudentInline(admin.TabularInline):
+    model = models.ClassroomStudent
+    def get_formset(self, request, obj=None, **kwargs):
+        self.classroom = None
+        if obj:
+            self.classroom = obj
+        return super(ClassroomStudentInline, self).get_formset(request, obj, **kwargs)
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == 'student' and self.classroom:
+            existing_studs = models.ClassroomStudent.objects.filter(classroom__financial_year = self.classroom.financial_year).exclude(classroom=self.classroom)
+            existing_studs = list(existing_studs.values_list('student_id', flat = True))
+            kwargs["queryset"] = models.Student.objects.all().exclude(id__in = existing_studs)
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 @admin.register(models.Classroom)
 class ClassroomAdmin(admin.ModelAdmin):
     # form = ClassroomForm
     list_filter = ('financial_year','class_name')
-    search_fields = ['students__first_name', 'students__last_name']
-    filter_horizontal = ('students', )
+    search_fields = ['classroomstudent__student__first_name', 'classroomstudent__student__last_name']
+    # filter_horizontal = ('students', )
+    inlines = [ClassroomStudentInline]
     def get_readonly_fields(self, request, obj=None):
         if not obj or obj.financial_year.status == 1:
             return []
         else:
-            return ['class_name', 'timetable', 'students', 'meet_link', 'section_name', 'financial_year']
-    def formfield_for_manytomany(self, db_field, request, **kwargs):
-        # obj = kwargs.get("obj")
-        # studs = []
-        # other_classes = models.Classroom.objects.filter(financial_year__status = 1)
-        # for clas in other_classes:
-        #     studs += list(clas.students.all())
-        # other_students = list(set(studs))
-        kwargs["queryset"] = models.Student.objects.exclude(status=0)
-        return super(ClassroomAdmin, self).formfield_for_manytomany(db_field, request, **kwargs)
+            return ['class_name', 'timetable', 'meet_link', 'section_name', 'financial_year']
+    # def get_search_results(self, request, queryset, search_term):
+    #     queryset, use_distinct = super(ClassroomAdmin, self).get_search_results(request, queryset, search_term)
+    #     try:
+    #         queryset = model.Student.objects.get(id__in = )
+    #     except:
+    #         pass
+    #     return queryset, use_distinct
+    # def formfield_for_manytomany(self, db_field, request, **kwargs):
+    #     # obj = kwargs.get("obj")
+    #     # studs = []
+    #     # other_classes = models.Classroom.objects.filter(financial_year__status = 1)
+    #     # for clas in other_classes:
+    #     #     studs += list(clas.students.all())
+    #     # other_students = list(set(studs))
+    #     kwargs["queryset"] = models.Student.objects.exclude(status=0)
+    #     return super(ClassroomAdmin, self).formfield_for_manytomany(db_field, request, **kwargs)
     def get_queryset(self, request):
         qs = super(ClassroomAdmin, self).get_queryset(request)
         if request.user.groups.filter(name='student-login'):
-            return qs.filter(students__user=request.user)
+            return qs.filter(classroomstudent__student__user=request.user)
         return qs
     pass
 
