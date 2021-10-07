@@ -38,7 +38,7 @@ class StudentAttendanceAdmin(admin.ModelAdmin):
 
 @admin.register(models.StudentComment)
 class StudentCommentAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('student', 'comment_type', 'comment', 'resolved')
 
 # 
 
@@ -140,11 +140,12 @@ class TeacherAdmin(admin.ModelAdmin):
 
 @admin.register(models.Fee)
 class FeeAdmin(admin.ModelAdmin):
+    search_fields = ['student__first_name', 'classroom__classroomstudent__student__first_name', 'financial_year__start_year', 'classroom__class_name']
     list_display = ('fees_type', 'description', 'financial_year', 'amountINR', 'created')
 
     def get_readonly_fields(self, request, obj=None):
         if obj:
-            return ('fees_type', 'financial_year', 'amountINR', 'student', 'classroom')
+            return ('fees_type', 'amountINR', ('student', 'financial_year'), ('classroom'))
         else:
             return []
 

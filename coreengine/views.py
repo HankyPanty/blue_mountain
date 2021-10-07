@@ -85,7 +85,7 @@ class Admission(APIView):
 class Gallery(APIView):
 	def get(self, request):
 		data = {}
-		images_urls = list(file_models.PhotoImage.objects.filter(status=1, photo_type__status=1).values_list('photo_type__event_name', 'image'))
+		images_urls = list(file_models.PhotoImage.objects.filter(status=1, photo_type__status=1).order_by('-photo_type_id').values_list('photo_type__event_name', 'image'))
 		for images_url in images_urls:
 			if data.get(images_url[0], None):
 				data[images_url[0]].append(images_url[1])

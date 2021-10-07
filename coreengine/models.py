@@ -78,7 +78,7 @@ class Student(models.Model):
 			user = list(User.objects.filter(username=username))
 			if user:
 				username = self.last_name+'_'+self.first_name
-			user = User.objects.create(username=username, password=str(self.dob), is_staff=1)
+			user = User.objects.create_user(username=username, password=str(self.dob), is_staff=1)
 			try:
 				user.groups.add(Group.objects.get(name='student-login'))
 			except:
@@ -146,6 +146,9 @@ class StudentComment(models.Model):
 	comment = models.CharField(max_length=1000, null=True, blank=True)
 	comment_type = models.IntegerField(choices=typeChoices, default=0)
 	resolved = models.IntegerField(choices=statusChoices, default=0)
+
+	def __str__(self):
+		return str(self.student)
 
 
 def exam_post_save(sender, instance, created, **kwargs):
@@ -248,7 +251,7 @@ class Teacher(TimeStampedModel):
 			user = list(User.objects.filter(username=username))
 			if user:
 				username = self.last_name+'_'+self.first_name
-			user = User.objects.create(username=username, password=str(self.dob), is_staff=1)
+			user = User.objects.create_user(username=username, password=str(self.dob), is_staff=1)
 			try:
 				user.groups.add(Group.objects.get(name='teacher-login'))
 				user.save()
@@ -303,6 +306,8 @@ class Fee(TimeStampedModel):
 	def save(self, *args, **kwargs):
 		if self.student and self.classroom:
 			raise ValidationError("Only one can be selected")
+		if self.classroom:
+			self.financial_year = self.classroom.financial_year
 		super(Fee, self).save(*args, **kwargs)
 
 
@@ -360,7 +365,7 @@ def classroomstudent_post_save(sender, instance, created, **kwargs):
 		already_studs = list(Amount.objects.filter(fee=fee).values_list('student_id', flat=True))
 		rem_studs = list(set(students)-set(already_studs))
 		for stud in rem_studs:
-			Amount.objects.create(fee=fee, student=stud, total_amount=fee.amountINR,
+			Amount.objects.create(fee=fee, student_id=stud, total_amount=fee.amountINR,
 								   amount_paid=0, amount_remaining=fee.amountINR,
 								   completed=0, remark="Auto Created")
 
