@@ -255,11 +255,29 @@ class MarksTabularOnline(admin.TabularInline):
             kwargs["queryset"] = self.classroom.students.all()
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
+class filterFY(admin.SimpleListFilter):
+    title = ('year')
+    parameter_name = 'financial_year'
+
+    def lookups(self, request, model_admin):
+        fy = tuple(models.FY.objects.all().values_list('id', 'start_year'))
+        return fy
+        return (
+            # ('active', ('All')),
+            (None, ('Active')),
+            ('inactive', ('Inactive')),
+            # ('all', ('All')),
+        )
+    def queryset(self, request, queryset):
+        fy_id = self.value()
+        if fy_id:
+            return queryset.filter(classroom__financial_year_id = fy_id)
+        return queryset
 
 @admin.register(models.Exam)
 class ExamAdmin(admin.ModelAdmin):
     inlines = [MarksTabularOnline]
-    list_filter = ('classroom__financial_year','subject')
+    list_filter = ('subject', filterFY)
     search_fields = ['exammark__student__first_name', 'exammark__student__last_name']
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == 'classroom':

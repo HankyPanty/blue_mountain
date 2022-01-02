@@ -109,7 +109,7 @@ class Classroom(models.Model):
 		(1, 'Nursery'),
 		(0, 'Playschool'),
 	)
-	class_name = models.IntegerField(choices=classroomChoices, null=True, blank=True)
+	class_name = models.IntegerField(choices=classroomChoices)
 	section_name = models.CharField(max_length=2, null=True, blank=True)
 	timetable = models.FileField(upload_to='coreengine/timetables/', max_length=1000, null=True, blank=True)
 	financial_year = models.ForeignKey(FY, on_delete=models.PROTECT)
@@ -365,9 +365,10 @@ class Amount(TimeStampedModel):
 	)
 	fee = models.ForeignKey(Fee, on_delete=models.PROTECT)
 	student = models.ForeignKey(Student, on_delete=models.PROTECT)
-	total_amount = models.IntegerField()
+	total_amount = models.IntegerField(help_text = 'In Rupees')
 	amount_paid = models.IntegerField()
 	amount_remaining = models.IntegerField()
+	discount = models.IntegerField(default=0)
 	completed = models.IntegerField(choices=statusChoices, default=0)
 	remark = models.CharField(max_length=200, null=True, blank=True)
 
@@ -375,7 +376,7 @@ class Amount(TimeStampedModel):
 		return str(self.student) + " - " + str(self.fee)
 
 	def save(self, *args, **kwargs):
-		self.amount_remaining = self.total_amount - self.amount_paid if self.total_amount - self.amount_paid > 0 else 0
+		self.amount_remaining = self.total_amount - self.amount_paid - self.discount if self.total_amount - self.amount_paid - self.discount > 0 else 0
 		if not self.amount_remaining:
 			self.completed = 1
 		super(Amount, self).save(*args, **kwargs)
