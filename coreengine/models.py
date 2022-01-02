@@ -68,6 +68,8 @@ class Student(models.Model):
 	heightCM = models.FloatField(null=True, blank=True)
 	weightKG = models.FloatField(null=True, blank=True)
 	blood_group = models.CharField(max_length=10, null=True, blank=True)
+	birth_certificate = models.FileField(upload_to='coreengine/documents/', max_length=1000, null=True, blank=True)
+	aadhar = models.FileField(upload_to='coreengine/documents/', max_length=1000, null=True, blank=True)
 
 	def __str__(self):
 		return str(self.first_name)+" "+str(self.last_name)
@@ -91,7 +93,23 @@ class Student(models.Model):
 
 
 class Classroom(models.Model):
-	class_name = models.CharField(max_length=20, null=True, blank=True)
+	classroomChoices = (
+		(13, 'Tenth'),
+		(12, 'Ninth'),
+		(11, 'Eighth'),
+		(10, 'Seventh'),
+		(9, 'Sixth'),
+		(8, 'Fifth'),
+		(7, 'Fourth'),
+		(6, 'Third'),
+		(5, 'Second'),
+		(4, 'First'),
+		(3, 'SR Kg'),
+		(2, 'JR Kg'),
+		(1, 'Nursery'),
+		(0, 'Playschool'),
+	)
+	class_name = models.IntegerField(choices=classroomChoices, null=True, blank=True)
 	section_name = models.CharField(max_length=2, null=True, blank=True)
 	timetable = models.FileField(upload_to='coreengine/timetables/', max_length=1000, null=True, blank=True)
 	financial_year = models.ForeignKey(FY, on_delete=models.PROTECT)
@@ -105,7 +123,7 @@ class Classroom(models.Model):
 		return Student.objects.filter(id__in = studs)
 
 	def __str__(self):
-		return str(self.class_name)+ ":" +str(self.section_name) + " " + str(self.financial_year.start_year)
+		return str(dict(self.classroomChoices).get(self.class_name))+ ":" +str(self.section_name) + " " + str(self.financial_year.start_year)
 
 	def save(self, *args, **kwargs):
 		super(Classroom, self).save(*args, **kwargs)
@@ -123,6 +141,37 @@ class ClassroomStudent(models.Model):
 		if ClassroomStudent.objects.filter(student=self.student, classroom__financial_year = self.classroom.financial_year):
 			raise ValidationError(self.student.first_name + " is already in same or another class of this year.")
 		super(ClassroomStudent, self).save(*args, **kwargs)
+
+class ClassroomTimeTable(models.Model):
+	subjectChoices = (
+		(15, 'Grammer'),
+		(14, 'Biology'),
+		(14, 'Chemistry'),
+		(14, 'Physics'),
+		(13, 'Audio Visual'),
+		(12, 'PT'),
+		(11, 'Music'),
+		(10, 'Games'),
+		(9, 'Break'),
+		(8, 'GeneralKnolowdge'),
+		(7, 'Computer'),
+		(6, 'Science'),
+		(5, 'Maths'),
+		(4, 'History'),
+		(3, 'Geography'),
+		(2, 'Marathi'),
+		(1, 'Hindi'),
+		(0, 'English'),
+	)
+
+	classroom = models.ForeignKey(Classroom, on_delete=models.SET_NULL, null=True, blank=True)
+	time = models.TimeField()
+	mon = models.IntegerField(choices=subjectChoices)
+	tue = models.IntegerField(choices=subjectChoices)
+	wed = models.IntegerField(choices=subjectChoices)
+	thu = models.IntegerField(choices=subjectChoices)
+	fri = models.IntegerField(choices=subjectChoices)
+	sat = models.IntegerField(choices=subjectChoices)
 
 class StudentAttendance(TimeStampedModel):
 	student = models.ForeignKey(Student, on_delete=models.SET_NULL, null=True)

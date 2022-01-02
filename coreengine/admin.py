@@ -94,13 +94,17 @@ class ClassroomStudentInline(admin.TabularInline):
             kwargs["queryset"] = models.Student.objects.all().exclude(id__in = existing_studs)
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
+class TimetableInline(admin.TabularInline):
+    model = models.ClassroomTimeTable
+
 @admin.register(models.Classroom)
 class ClassroomAdmin(admin.ModelAdmin):
     # form = ClassroomForm
+    fields = ('class_name', 'section_name', 'financial_year', 'meet_link')
     list_filter = ('financial_year','class_name')
     search_fields = ['classroomstudent__student__first_name', 'classroomstudent__student__last_name']
     # filter_horizontal = ('students', )
-    inlines = [ClassroomStudentInline]
+    inlines = [ClassroomStudentInline, TimetableInline]
     def get_readonly_fields(self, request, obj=None):
         if not obj or obj.financial_year.status == 1:
             return []
@@ -255,4 +259,9 @@ class MarksTabularOnline(admin.TabularInline):
 @admin.register(models.Exam)
 class ExamAdmin(admin.ModelAdmin):
     inlines = [MarksTabularOnline]
-
+    list_filter = ('classroom__financial_year','subject')
+    search_fields = ['exammark__student__first_name', 'exammark__student__last_name']
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == 'classroom':
+            kwargs["queryset"] = Classroom.objects.filter(financial_year__status = 1)
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
