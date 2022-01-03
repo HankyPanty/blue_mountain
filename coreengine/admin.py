@@ -291,3 +291,17 @@ class ExamAdmin(admin.ModelAdmin):
         if db_field.name == 'classroom':
             kwargs["queryset"] = Classroom.objects.filter(financial_year__status = 1)
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+@admin.register(models.Promote)
+class PromoteAdmin(admin.ModelAdmin):
+    def has_delete_permission(self, request, obj=None):
+        return False
+    def has_change_permission(self, request, obj=None):
+        return False
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == 'classroom':
+            fy = models.FY.objects.filter(status=0).order_by('start_year').last()
+            if not fy:
+                return super().formfield_for_foreignkey(db_field, request, **kwargs)
+            kwargs["queryset"] = models.Classroom.objects.filter(financial_year__id = fy.id)
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
