@@ -350,6 +350,8 @@ class Fee(TimeStampedModel):
 		return str(dict(self.fees_type_choices).get(self.fees_type)) +":" + self.description + ": "+ str(self.financial_year.start_year)
 
 	def save(self, *args, **kwargs):
+		if not self.student and not self.classroom:
+			raise ValidationError("Select atlease one!")
 		if self.student and self.classroom:
 			raise ValidationError("Only one can be selected")
 		super(Fee, self).save(*args, **kwargs)

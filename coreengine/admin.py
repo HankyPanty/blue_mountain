@@ -145,12 +145,20 @@ class TeacherAdmin(admin.ModelAdmin):
 @admin.register(models.Fee)
 class FeeAdmin(admin.ModelAdmin):
     list_display = ('fees_type', 'description', 'financial_year', 'amountINR', 'created')
+    fields = ('fees_type', 'description', 'amountINR', 'financial_year', ('student'), ('classroom'))
 
     def get_readonly_fields(self, request, obj=None):
         if obj:
             return ('fees_type', 'financial_year', 'amountINR', 'student', 'classroom')
         else:
             return []
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == 'classroom':
+            kwargs["queryset"] = models.Classroom.objects.filter(financial_year__status = 1)
+        if db_field.name == 'financial_year':
+            kwargs["queryset"] = models.FY.objects.filter(status = 1)
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 # 
 
