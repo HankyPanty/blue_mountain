@@ -91,11 +91,14 @@ class ClassroomStudentInline(admin.TabularInline):
         if db_field.name == 'student' and self.classroom:
             existing_studs = models.ClassroomStudent.objects.filter(classroom__financial_year = self.classroom.financial_year).exclude(classroom=self.classroom)
             existing_studs = list(existing_studs.values_list('student_id', flat = True))
-            kwargs["queryset"] = models.Student.objects.all().exclude(id__in = existing_studs)
+            kwargs["queryset"] = models.Student.objects.filter(status=1).exclude(id__in = existing_studs)
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 class TimetableInline(admin.TabularInline):
     model = models.ClassroomTimeTable
+
+class FeeInline(admin.TabularInline):
+    model = models.Fee
 
 @admin.register(models.Classroom)
 class ClassroomAdmin(admin.ModelAdmin):
@@ -104,7 +107,7 @@ class ClassroomAdmin(admin.ModelAdmin):
     list_filter = ('financial_year','class_name')
     search_fields = ['classroomstudent__student__first_name', 'classroomstudent__student__last_name']
     # filter_horizontal = ('students', )
-    inlines = [ClassroomStudentInline, TimetableInline]
+    inlines = [ClassroomStudentInline, TimetableInline, FeeInline]
     def get_readonly_fields(self, request, obj=None):
         if not obj or obj.financial_year.status == 1:
             return []
@@ -142,25 +145,25 @@ class TeacherAdmin(admin.ModelAdmin):
 
 # 
 
-@admin.register(models.Fee)
-class FeeAdmin(admin.ModelAdmin):
-    list_display = ('fees_type', 'description', 'financial_year', 'amountINR', 'created')
-    fields = ('fees_type', 'description', 'amountINR', 'financial_year', ('student'), ('classroom'))
+# @admin.register(models.Fee)
+# class FeeAdmin(admin.ModelAdmin):
+#     list_display = ('fees_type', 'description', 'financial_year', 'amountINR', 'created')
+#     fields = ('fees_type', 'description', 'amountINR', 'financial_year', ('student'), ('classroom'))
 
-    def get_readonly_fields(self, request, obj=None):
-        if obj:
-            return ('fees_type', 'financial_year', 'amountINR', 'student', 'classroom')
-        else:
-            return []
+#     def get_readonly_fields(self, request, obj=None):
+#         if obj:
+#             return ('fees_type', 'financial_year', 'amountINR', 'student', 'classroom')
+#         else:
+#             return []
 
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == 'classroom':
-            kwargs["queryset"] = models.Classroom.objects.filter(financial_year__status = 1)
-        if db_field.name == 'financial_year':
-            kwargs["queryset"] = models.FY.objects.filter(status = 1)
-        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+#     def formfield_for_foreignkey(self, db_field, request, **kwargs):
+#         if db_field.name == 'classroom':
+#             kwargs["queryset"] = models.Classroom.objects.filter(financial_year__status = 1)
+#         if db_field.name == 'financial_year':
+#             kwargs["queryset"] = models.FY.objects.filter(status = 1)
+#         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
-# 
+# # 
 
 class RemainingGte(admin.SimpleListFilter):
     # Human-readable title which will be displayed in the
@@ -188,21 +191,22 @@ class AmountDetailsinline(admin.TabularInline):
 
 @admin.register(models.Amount)
 class AmountAdmin(admin.ModelAdmin):
-    readonly_fields = ['student', 'fee', 'total_amount', 'amount_remaining', 'amount_paid']
     list_display = ('student', 'fee', 'amount_remaining', 'total_amount', 'completed', 'created', 'modified')
     list_filter = ('completed', RemainingGte)
     search_fields = ['student__first_name', 'student__last_name']
     inlines = [AmountDetailsinline]
     # actions = [filter_remaining_fees, filter_out_completed_fees]
     change_list_template = 'admin/total_amounts_template.html'
+    def get_readonly_fields(self, request, obj=None):
+        if not obj:
+            return ['fee', 'amount_remaining', 'amount_paid']
+        else:
+            return ['student', 'fee', 'total_amount', 'amount_remaining', 'amount_paid']
     def get_queryset(self, request):
         qs = super(AmountAdmin, self).get_queryset(request)
         if request.user.groups.filter(name='student-login'):
             return qs.filter(student__user=request.user)
         return qs
-
-    def has_add_permission(self, request, obj=None):
-        return False
 
     # def changelist_view(self, request, extra_context=None):
     #     response = super(AmountAdmin, self).changelist_view(request)

@@ -311,20 +311,12 @@ def fees_post_save(sender, instance, created, **kwargs):
 	if not created:
 		return
 	with transaction.atomic():
-		student = instance.student
-		classroom = instance.classroom
-		if classroom:
-			students=classroom.students
-		if student:
-			students=Student.objects.filter(id=student.id)
-
-		students=students.filter(status=1)
+		students = instance.classroom.students.filter(status=1)
 
 		for stud in list(students):
 			Amount.objects.create(fee=instance, student=stud, total_amount=instance.amountINR,
 								   amount_paid=0, amount_remaining=instance.amountINR,
 								   completed=0, remark="Auto Created")
-
 	return
 
 
@@ -342,18 +334,14 @@ class Fee(TimeStampedModel):
 	description = models.CharField(max_length=200, null=True, blank=True)
 	amountINR = models.IntegerField()
 	classroom = models.ForeignKey(Classroom, on_delete=models.SET_NULL, null=True, blank=True, help_text="Select Only ONE")
-	student = models.ForeignKey(Student, on_delete=models.SET_NULL, null=True, blank=True, help_text="Select Only ONE")
-	financial_year = models.ForeignKey(FY, on_delete=models.PROTECT)
+	# student = models.ForeignKey(Student, on_delete=models.SET_NULL, null=True, blank=True, help_text="Select Only ONE")
+	# financial_year = models.ForeignKey(FY, on_delete=models.PROTECT)
 	add_to_future_students = models.IntegerField(choices=((1,'yes'),(0,'no')), default=1, help_text="Applicable For Class level Fees")
 
 	def __str__(self):
 		return str(dict(self.fees_type_choices).get(self.fees_type)) +":" + self.description + ": "+ str(self.financial_year.start_year)
 
 	def save(self, *args, **kwargs):
-		if not self.student and not self.classroom:
-			raise ValidationError("Select atlease one!")
-		if self.student and self.classroom:
-			raise ValidationError("Only one can be selected")
 		super(Fee, self).save(*args, **kwargs)
 
 
@@ -365,10 +353,10 @@ class Amount(TimeStampedModel):
 		(1, 'Completed'),
 		(0, 'Pending'),
 	)
-	fee = models.ForeignKey(Fee, on_delete=models.PROTECT)
+	fee = models.ForeignKey(Fee, on_delete=models.PROTECT, null=True, blank=True)
 	student = models.ForeignKey(Student, on_delete=models.PROTECT)
 	total_amount = models.IntegerField(help_text = 'In Rupees')
-	amount_paid = models.IntegerField()
+	amount_paid = models.IntegerField(default=0)
 	amount_remaining = models.IntegerField()
 	discount = models.IntegerField(default=0)
 	completed = models.IntegerField(choices=statusChoices, default=0)
@@ -427,12 +415,12 @@ def promote_students(old_classroom):
 		raise ValidationError("Active FY is not greater than current FY of classroom")
 	new_classroom, created = Classroom.objects.get_or_create(class_name = int(old_classroom.class_name) + 1, section_name = old_classroom.section_name, financial_year_id=active_fy.id)
 
-	students = new_classroom.students
-	for student in students:
+	students = list(set(old_classroom.students.values_list('id', flat=True)) - set(new_classroom.students.values_list('id', flat=True)))
+	for student_id in students:
 		try:
-			ClassroomStudent.objects.create(student_id=student.id, classroom_id=new_classroom.id)
+			ClassroomStudent.objects.create(student_id=student_id, classroom_id=new_classroom.id)
 		except:
-			print("ERROR in Promoting Student to new_classroom:"+str(new_classroom.id) + " student:"+str(student))
+			print("ERROR in Promoting Student to new_classroom:"+str(new_classroom.id) + " student:"+str(student_id))
 	return
 
 
