@@ -293,7 +293,7 @@ class ExamAdmin(admin.ModelAdmin):
     search_fields = ['exammark__student__first_name', 'exammark__student__last_name']
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == 'classroom':
-            kwargs["queryset"] = Classroom.objects.filter(financial_year__status = 1)
+            kwargs["queryset"] = models.Classroom.objects.filter(financial_year__status = 1)
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 @admin.register(models.Promote)

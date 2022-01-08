@@ -339,7 +339,7 @@ class Fee(TimeStampedModel):
 	add_to_future_students = models.IntegerField(choices=((1,'yes'),(0,'no')), default=1, help_text="Applicable For Class level Fees")
 
 	def __str__(self):
-		return str(dict(self.fees_type_choices).get(self.fees_type)) +":" + self.description + ": "+ str(self.financial_year.start_year)
+		return str(dict(self.fees_type_choices).get(self.fees_type)) +":" + self.description + ": "+ str(self.classroom)
 
 	def save(self, *args, **kwargs):
 		super(Fee, self).save(*args, **kwargs)
@@ -400,7 +400,7 @@ def classroomstudent_post_save(sender, instance, created, **kwargs):
 		already_studs = list(Amount.objects.filter(fee=fee).values_list('student_id', flat=True))
 		rem_studs = list(set(students)-set(already_studs))
 		for stud in rem_studs:
-			Amount.objects.create(fee=fee, student=stud, total_amount=fee.amountINR,
+			Amount.objects.create(fee=fee, student_id=stud, total_amount=fee.amountINR,
 								   amount_paid=0, amount_remaining=fee.amountINR,
 								   completed=0, remark="Auto Created")
 
@@ -428,7 +428,7 @@ class Promote(TimeStampedModel):
 
 	classroom = models.ForeignKey(Classroom, on_delete=models.PROTECT)
 
-	def __str__(self, arg):
+	def __str__(self):
 		return str(self.classroom)
 
 	def save(self, *args, **kwargs):
