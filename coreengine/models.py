@@ -80,7 +80,7 @@ class Student(models.Model):
 			user = list(User.objects.filter(username=username))
 			if user:
 				username = self.last_name+'_'+self.first_name
-			user = User.objects.create(username=username, password=str(self.dob), is_staff=1)
+			user = User.objects.create_user(username=username, password=str(self.dob), is_staff=1)
 			try:
 				user.groups.add(Group.objects.get(name='student-login'))
 			except:
@@ -196,6 +196,8 @@ class StudentComment(models.Model):
 	comment_type = models.IntegerField(choices=typeChoices, default=0)
 	resolved = models.IntegerField(choices=statusChoices, default=0)
 
+	def __str__(self):
+		return str(self.student) + ": " + str(dict(self.typeChoices).get(self.comment_type))
 
 def exam_post_save(sender, instance, created, **kwargs):
 	if created:
@@ -297,7 +299,7 @@ class Teacher(TimeStampedModel):
 			user = list(User.objects.filter(username=username))
 			if user:
 				username = self.last_name+'_'+self.first_name
-			user = User.objects.create(username=username, password=str(self.dob), is_staff=1)
+			user = User.objects.create_user(username=username, password=str(self.dob), is_staff=1)
 			try:
 				user.groups.add(Group.objects.get(name='teacher-login'))
 				user.save()

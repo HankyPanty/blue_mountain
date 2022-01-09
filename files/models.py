@@ -65,7 +65,7 @@ class PhotoImage(models.Model):
 
 	photo_type = models.ForeignKey(Photo, on_delete=models.PROTECT)
 	image = models.ImageField(upload_to='templates/photo/', height_field=None, width_field=None, max_length=1000, null=True, blank=True)
-	status = models.IntegerField(choices=statusChoices, default=0)
+	status = models.IntegerField(choices=statusChoices, default=1)
 	def __str__(self):
 		return str(self.photo_type.event_name) + str(self.image.name)
 

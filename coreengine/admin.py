@@ -38,7 +38,7 @@ class StudentAttendanceAdmin(admin.ModelAdmin):
 
 @admin.register(models.StudentComment)
 class StudentCommentAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('student', 'comment_type', 'comment', 'resolved')
 
 # 
 
