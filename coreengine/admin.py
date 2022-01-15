@@ -191,7 +191,7 @@ class AmountDetailsinline(admin.TabularInline):
 
 @admin.register(models.Amount)
 class AmountAdmin(admin.ModelAdmin):
-    list_display = ('student', 'fee', 'amount_remaining', 'total_amount', 'completed', 'created', 'modified')
+    list_display = ('student', 'fee', 'amount_remaining', 'discount', 'total_amount', 'completed', 'created', 'modified')
     list_filter = ('completed', RemainingGte)
     search_fields = ['student__first_name', 'student__last_name']
     inlines = [AmountDetailsinline]
