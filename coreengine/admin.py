@@ -309,3 +309,22 @@ class PromoteAdmin(admin.ModelAdmin):
                 return super().formfield_for_foreignkey(db_field, request, **kwargs)
             kwargs["queryset"] = models.Classroom.objects.filter(financial_year__id = fy.id)
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+
+class QuestionInline(admin.TabularInline):
+    model = models.Question
+
+@admin.register(models.Quiz)
+class QuizAdmin(admin.ModelAdmin):
+    list_filter = ('subject', 'classroom', 'status')
+    search_fields = ['tournament_name']
+
+
+@admin.register(models.QuizTeam)
+class QuizTeamAdmin(admin.ModelAdmin):
+    readonly_fields = ['score']
+    inlines = [QuestionInline]
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == 'tournament':
+            kwargs["queryset"] = models.Quiz.objects.filter(status = 0)
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
