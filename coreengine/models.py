@@ -504,7 +504,7 @@ class Question(models.Model):
 	opt_c = models.CharField(max_length=200)
 	opt_d = models.CharField(max_length=200)
 	correct = models.CharField(choices=statusChoices, max_length=5)
-	report_card = models.ImageField(upload_to='coreengine/quiz/', max_length=1000, null=True, blank=True)
+	image = models.ImageField(upload_to='templates/kbc/', max_length=1000, null=True, blank=True)
 
 	def __str__(self):
 		return str(self.team)+ "-- " +str(self.no)
