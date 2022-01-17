@@ -329,6 +329,6 @@ class QuizTeamAdmin(admin.ModelAdmin):
         else:
             return ['tournament', 'score']
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == 'tournament' and not self.pk:
+        if db_field.name == 'tournament':
             kwargs["queryset"] = models.Quiz.objects.filter(status = 0)
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
