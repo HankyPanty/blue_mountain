@@ -19,6 +19,12 @@ import templates
 from coreengine import models
 from files import models as file_models
 
+
+class JSTemplates(APIView):
+	def get(self, request, site_name):
+		data = open("./templates/"+str(site_name)+".js").read()
+		return HttpResponse(data, content_type="application/javascript")
+
 class Home(APIView):
 	def get(self, request):
 		# return HttpResponse("This is Home Page.")
@@ -119,7 +125,7 @@ class AboutUs(APIView):
 
 
 class KbcImage(APIView):
-	def get(self, request):
+	def get(self, request, banner_name):
 		image_data = open("./templates/kbc/"+str(banner_name), "rb").read()
 		return HttpResponse(image_data, content_type="image/png")
 
@@ -129,8 +135,8 @@ class KbcQuizList(APIView):
 		data = {}
 		quizes = list(models.Quiz.objects.filter(status = 1))
 		for quiz in quizes:
-			quiz_data[str(quiz.id)] = str(quiz)
-		return render(request, 'infrastructure_backup.html', {'data': data})
+			data[str(quiz.id)] = str(quiz)
+		return render(request, 'kbc_select.html', {'data': data})
 
 @method_decorator(login_required, name='dispatch')
 class KbcQuizDetails(APIView):
@@ -138,14 +144,20 @@ class KbcQuizDetails(APIView):
 		# if not request.user.is_authenticated:
 		# 	return HttpResponseRedirect(reverse('admin:index'))
 		try:
-			quiz = []
+			quiz_questions = []
 			tournament_id = int(request.GET.get("quiz_id"))
-			teams = models.Quiz.objects.get(id=tournament_id)
+			quiz = models.Quiz.objects.get(id=tournament_id, status=1)
+			teams = models.QuizTeam.objects.filter(tournament_id=quiz.id)
 		except:
 			return Response("Could Not Find Quiz Id.", status=status.HTTP_400_BAD_REQUEST)
 
 		for team in teams:
+			questions=[]
 			team_questions = list(models.Question.objects.filter(team_id = team.id).order_by('no').values_list('question', 'opt_a', 'opt_b', 'opt_c', 'opt_d', 'correct', 'image'))
-			quiz.append(team_questions)
-		quiz.append(["end"])
-		return render(request, 'infrastructure_backup.html', {'data': quiz})
+			for team_question in team_questions:
+				questions.append(list(team_question))
+			quiz_questions.append([team.team_name, questions])
+		quiz_questions.append(["end"])
+		prize_list = ["Fail", "1", "2", "3", "4", "5", "10", "20", "30", "40", "50", "60", "70", "80", "90", "100"]
+		prize_list = prize_list[0:len(team_questions)+1]
+		return render(request, 'kbc.html', {'data': quiz_questions, 'prize_list':prize_list})

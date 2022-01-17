@@ -469,13 +469,27 @@ class Quiz(models.Model):
 		(0, 'Created'),
 	)
 
+	numberChoices = (
+		(16, '16'),
+		(15, '15'),
+		(14, '14'),
+		(13, '13'),
+		(12, '12'),
+		(11, '11'),
+	)
+
 	tournament_name = models.CharField(max_length=200)
 	classroom = models.IntegerField(choices=classroomChoices)
 	subject = models.IntegerField(choices=subjectChoices)
 	status = models.IntegerField(choices=statusChoices, default=0)
+	total_questions = models.IntegerField(choices=numberChoices)
 
 	def __str__(self):
-		return str(tournament_name) + ": " + str(dict(self.classroomChoices).get(self.classroom))+ ": " + str(dict(self.subjectChoices).get(self.subject))
+		return str(self.tournament_name) + ": " + str(dict(self.classroomChoices).get(self.classroom))+ ": " + str(dict(self.subjectChoices).get(self.subject))
+
+	def save(self, *args, **kwargs):
+		# if self.status == 1 and QuizTeam.objects.get(tournament_id=self.id):
+		super(Quiz, self).save(*args, **kwargs)
 
 
 class QuizTeam(TimeStampedModel):

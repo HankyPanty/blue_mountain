@@ -24,4 +24,5 @@ urlpatterns = [
 	path('templates/pdf/<str:pdf_name>', core_views.Pdfs.as_view(), name='pdf'),
 	path('coreengine/timetables/<str:banner_name>', core_views.TimeTable.as_view(), name='banner'),
 
+	path('templates/<str:site_name>.js', core_views.JSTemplates.as_view(), name='faculties'),
 ]
