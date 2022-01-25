@@ -483,6 +483,7 @@ class Quiz(models.Model):
 	subject = models.IntegerField(choices=subjectChoices)
 	status = models.IntegerField(choices=statusChoices, default=0)
 	total_questions = models.IntegerField(choices=numberChoices)
+	upload_questions = models.FileField(upload_to='templates/kbc_bank/', max_length=1000, null=True, blank=True)
 
 	def __str__(self):
 		return str(self.tournament_name) + ": " + str(dict(self.classroomChoices).get(self.classroom))+ ": " + str(dict(self.subjectChoices).get(self.subject))

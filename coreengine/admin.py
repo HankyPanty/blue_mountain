@@ -320,15 +320,15 @@ class QuizAdmin(admin.ModelAdmin):
     search_fields = ['tournament_name']
 
 
-@admin.register(models.QuizTeam)
-class QuizTeamAdmin(admin.ModelAdmin):
-    inlines = [QuestionInline]
-    def get_readonly_fields(self, request, obj=None):
-        if not obj:
-            return ['score']
-        else:
-            return ['tournament', 'score']
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == 'tournament':
-            kwargs["queryset"] = models.Quiz.objects.filter(status = 0)
-        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+# @admin.register(models.QuizTeam)
+# class QuizTeamAdmin(admin.ModelAdmin):
+#     inlines = [QuestionInline]
+#     def get_readonly_fields(self, request, obj=None):
+#         if not obj:
+#             return ['score']
+#         else:
+#             return ['tournament', 'score']
+#     def formfield_for_foreignkey(self, db_field, request, **kwargs):
+#         if db_field.name == 'tournament':
+#             kwargs["queryset"] = models.Quiz.objects.filter(status = 0)
+#         return super().formfield_for_foreignkey(db_field, request, **kwargs)

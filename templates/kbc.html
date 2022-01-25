@@ -7,13 +7,14 @@
 			position: absolute;
 			left: 50%;
 			top: 0;
+			width: 50%;
 		}
 		#logo_text_inner {
 			position: relative;
 			top: 380;
 			left: -50%;
 			color: white;
-			font-size:150;
+			font-size:90;
 			font-family:verdana;
 			text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
 			width: 0;
@@ -30,6 +31,7 @@
 			left: 50%;
 			height: 100%;
 			top: 0;
+			width: 50%;
 		}
 		#seventyfive_outer {
 			position: absolute;
@@ -46,7 +48,8 @@
 		#center_inner_questions {
 			position: relative;
 			height: 100%;
-			left: -50%;
+			left: -100%;
+			width: 200%;
 			top: 0;
 		}
 		#center_inner_lifelines {
@@ -67,6 +70,7 @@
 			height: 100%;
 			left: 50%;
 			top: 0;
+			width: 50%;
 		}
 		#right_sixty {
 			position: absolute;
@@ -106,6 +110,21 @@
 			width: 50%;
 			left: 50%;
 		}
+		#left_sixty {
+			position: absolute;
+			height: 100%;
+			width: 60%;
+			top: 10%;
+			left: 0;
+		}
+		#right_fourty {
+			position: absolute;
+			height: 100%;
+			top: 10%;
+			width: 50%;
+			left: 60%;
+			width: 40%;
+		}
 		#text_big {
 			color: white;
 			font-size:50;
@@ -133,9 +152,9 @@
 			position: absolute;
 			display: table;
 		}
-		#text_question_and_options {
+		#text_question {
 			color: white;
-			font-size:25;
+			font-size:40;
 			font-family:verdana;
 			text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
 			width: 100%;
@@ -143,6 +162,18 @@
 			top: 0;
 			position: absolute;
 			display: table;
+		}
+		#text_options {
+			color: white;
+			font-size:35;
+			font-family:verdana;
+			text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
+			width: 100%;
+			height: 100%;
+			top: 0;
+			position: absolute;
+			display: table;
+			text-align: left;
 		}
 		#text_large_timer {
 			color: white;
@@ -175,13 +206,19 @@
 	</style>
 </head>
 <body bgcolor="black">
-	<div id="logo" style="position:absolute;height:10%;width:100%;"><img src="/templates/kbc/blue_valley_logo.png" style="height: 100%;"><img src="/templates/kbc/blue_mountain_logo.png" style="padding-right: 1%;float:right;height: 100%;"></div>
+	<div id="logo" style="position:absolute;height:10%;width:100%;top:0;left:0;"><img src="/templates/kbc/blue_valley_logo.png" style="height: 100%;"><img src="/templates/kbc/blue_mountain_logo.png" style="padding-right: 1%;float:right;height: 100%;"></div>
 	<div id="game" style="height:100%; width: 100%; margin:0; padding: 0"></div>
 	<!-- <script src="/templates/contestants.js"></script> -->
 	<script type="text/javascript">
 		var contestants = {{data|safe}};
 		var prize_money_list = {{prize_list|safe}};
+		var mobile = "";
+		if (false) { mobile = "_m";}
+		var script = document.createElement("script");
+		script.src = "/templates/base" + mobile + ".js";
+		document.body.appendChild(script);
 	</script>
-	<script src="/templates/base.js"></script>
+	<div id="game" style="height:100%; width: 100%; margin:0; padding: 0"></div>
+	<div id="next" style="position: absolute; left: 80%; height: 10%; top: 45%;" onclick="progressGame(110);"><img src="/templates/kbc/next.png" style="height: 100%;"></div>
 </body>
 </html>

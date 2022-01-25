@@ -81,7 +81,7 @@ var rules_lifeline = false;
 function showRules() {
 	if (!rules_questions) {
 		var element = document.getElementById('game');
-		var htmlText="<div id='left_fourty'><div id='fifty_inner'><div id='center_inner_questions' style='padding-top:5%; opacity: 0; height: 50%; overflow: hidden'>";
+		var htmlText="<div id='left_sixty'><div id='fifty_inner'><div id='center_inner_questions' style='padding-top:5%; opacity: 0; height: 50%; overflow: hidden'>";
 		for (let i = total_questions; i > 0; i--) {
 			htmlText+="<div id='question_number'><center><img id='img_question"+i+"' src='/templates/kbc/template_black.png' height='100%' width='70%'><div id='text_small_money'><div id='text_vertical_center'>"+prize_money_list[i]+"</div></div></center></div>";
 		}
@@ -93,13 +93,13 @@ function showRules() {
 	} else if (!rules_lifeline) {
 		var element = document.getElementById('game');
 		element.innerHTML = element.innerHTML
-			+"<div id='right_sixty'><div id='fifty_inner'><div id='center_inner_lifelines' style='padding-top:5%; opacity: 0; height: 50%; width: 200%; left: -100%; overflow: hidden;'>"
-				+"<img id='img_5050' onclick='progressGame(49);' src='/templates/kbc/5050.png' width='20%' height='30%'> "
-				+"<img id='img_audpoll' onclick='progressGame(50);' src='/templates/kbc/audpoll.png' width='20%' height='30%'> "
-				+"<img id='img_phone' onclick='progressGame(51);' src='/templates/kbc/flip.png' width='20%' height='30%'> "
-				+"<img id='img_timer' src='/templates/kbc/circle.png' width='15%' height='30%'>"
+			+"<div id='right_fourty'><div id='fifty_inner'><div id='center_inner_lifelines' style='padding-top:5%; opacity: 0; height: 30%; width: 200%; left: -100%; overflow: visible;'>"
+				+"<img id='img_5050' onclick='progressGame(49);' src='/templates/kbc/5050.png' width='30%' height='30%'> "
+				+"<img id='img_audpoll' onclick='progressGame(50);' src='/templates/kbc/audpoll.png' width='30%' height='30%'><br> "
+				+"<img id='img_phone' onclick='progressGame(51);' src='/templates/kbc/flip.png' width='30%' height='30%'> "
+				+"<img id='img_timer' src='/templates/kbc/circle.png' width='25%' height='30%'>"
 				+"<div id='timer_text'><center><div id='text_large_timer'><div id='text_vertical_center'><div id='text_timer_main'>60s</div></div></div></center></div>"
-				+"<br><img id='question_img' height='70%' style='display: none'>"
+				+"<br><img id='question_img' width='100%' style='position:relative; left:-40%; display: none'>"
 			+"</div></div></div>";
 		increaseOpacity('center_inner_lifelines');
 		document.getElementById('center_inner_questions').style.opacity = 1;
@@ -113,20 +113,18 @@ function showRules() {
 		var element = document.getElementById('game');
 		element.innerHTML = element.innerHTML
 			+"<div id='bottom_fifty'>"
-				+"<div id='top_fourty'><center style='position:relative;'><img src='/templates/kbc/template_black.png' width='70%' height = '100%'><div id='text_question'><div id='text_vertical_center'><div id='question'></div></div></div></center></div>"
+				+"<div id='top_fourty'><center style='position:relative;'><img src='/templates/kbc/template_black.png' width='75%' height = '100%'><div id='text_question'><div id='text_vertical_center'><div id='question'></div></div></div></center></div>"
 				+"<div id='bottom_sixty'>"
-					+"<div id='left_fifty'><center><br>"
+					+"<center><br>"
 						+"<div id='text_options'><div id='text_option_a'>A</div></div>"
-						+"<div id='text_options'><div id='text_option_c'>C</div></div>"
-						+"<img src='/templates/kbc/template_black.png' width='70%' id='img_option_a'><br><br>"
-						+"<img src='/templates/kbc/template_black.png' width='70%' id='img_option_c'>"
-					+"</center></div>"
-					+"<div id='right_fifty'><center><br>"
 						+"<div id='text_options'><div id='text_option_b'>B</div></div>"
+						+"<div id='text_options'><div id='text_option_c'>C</div></div>"
 						+"<div id='text_options'><div id='text_option_d'>D</div></div>"
-						+"<img src='/templates/kbc/template_black.png' width='70%' id='img_option_b'><br><br>"
-						+"<img src='/templates/kbc/template_black.png' width='70%' id='img_option_d'>"
-					+"</center></div>"
+						+"<img src='/templates/kbc/template_black.png' width='70%' id='img_option_a'><br>"
+						+"<img src='/templates/kbc/template_black.png' width='70%' id='img_option_b'><br>"
+						+"<img src='/templates/kbc/template_black.png' width='70%' id='img_option_c'><br>"
+						+"<img src='/templates/kbc/template_black.png' width='70%' id='img_option_d'><br>"
+					+"</center>"
 				+"</div>"
 			+"</div>";
 		/* Hacky */
@@ -236,7 +234,7 @@ function displayQuestion() {
 		img.src = "";
 		img.style.display = 'none';
 	} else {
-		img.src = "/"+contestants[contestant_index][1][question_index+num_flips][6];
+		img.src = "/" + contestants[contestant_index][1][question_index+num_flips][6];
 		img.style.display = '';
 	}
 	document.getElementById('img_question' + (question_index + 1)).src = '/templates/kbc/template_gray.png';

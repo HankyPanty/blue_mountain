@@ -147,17 +147,19 @@ class KbcQuizDetails(APIView):
 			quiz_questions = []
 			tournament_id = int(request.GET.get("quiz_id"))
 			quiz = models.Quiz.objects.get(id=tournament_id, status=1)
-			teams = models.QuizTeam.objects.filter(tournament_id=quiz.id)
+			# teams = models.QuizTeam.objects.filter(tournament_id=quiz.id)
 		except:
 			return Response("Could Not Find Quiz Id.", status=status.HTTP_400_BAD_REQUEST)
 
-		for team in teams:
-			questions=[]
-			team_questions = list(models.Question.objects.filter(team_id = team.id).order_by('no').values_list('question', 'opt_a', 'opt_b', 'opt_c', 'opt_d', 'correct', 'image'))
-			for team_question in team_questions:
-				questions.append(list(team_question))
-			quiz_questions.append([team.team_name, questions])
-		quiz_questions.append(["end"])
+		quiz_questions = get_questions_from_sheet("./" + str(quiz.upload_questions))
+
+		# for team in teams:
+		# 	questions=[]
+		# 	team_questions = list(models.Question.objects.filter(team_id = team.id).order_by('no').values_list('question', 'opt_a', 'opt_b', 'opt_c', 'opt_d', 'correct', 'image'))
+		# 	for team_question in team_questions:
+		# 		questions.append(list(team_question))
+		# 	quiz_questions.append([team.team_name, questions])
+		# quiz_questions.append(["end"])
 		prize_list = ["Fail", "1", "2", "3", "4", "5", "10", "20", "30", "40", "50", "60", "70", "80", "90", "100"]
-		prize_list = prize_list[0:len(team_questions)+1]
+		prize_list = prize_list[0:len(quiz_questions[0][1])+1]
 		return render(request, 'kbc.html', {'data': quiz_questions, 'prize_list':prize_list})
