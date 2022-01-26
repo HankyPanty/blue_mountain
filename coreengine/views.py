@@ -151,6 +151,7 @@ class KbcQuizDetails(APIView):
 		except:
 			return Response("Could Not Find Quiz Id.", status=status.HTTP_400_BAD_REQUEST)
 
+		from coreengine.tasks import get_questions_from_sheet
 		quiz_questions = get_questions_from_sheet("./" + str(quiz.upload_questions))
 
 		# for team in teams:
