@@ -15,10 +15,14 @@ urlpatterns = [
 	path('about-us/', core_views.AboutUs.as_view(), name='faculties'),
 	path('gallery/', core_views.Gallery.as_view(), name='faculties'),
 	path('social/', core_views.Social.as_view(), name='faculties'),
+	path('kbc/select_quiz/', core_views.KbcQuizList.as_view(), name='faculties'),
+	path('kbc/start/', core_views.KbcQuizDetails.as_view(), name='faculties'),
 
 	path('templates/banner/<str:banner_name>', core_views.Banner.as_view(), name='banner'),
 	path('templates/photo/<str:banner_name>', core_views.Photo.as_view(), name='banner'),
+	path('templates/kbc/<str:banner_name>', core_views.KbcImage.as_view(), name='banner'),
 	path('templates/pdf/<str:pdf_name>', core_views.Pdfs.as_view(), name='pdf'),
 	path('coreengine/timetables/<str:banner_name>', core_views.TimeTable.as_view(), name='banner'),
 
+	path('templates/<str:site_name>.js', core_views.JSTemplates.as_view(), name='faculties'),
 ]

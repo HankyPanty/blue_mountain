@@ -437,3 +437,89 @@ class Promote(TimeStampedModel):
 		promote_students(self.classroom)
 		super(Promote, self).save(*args, **kwargs)
 
+
+class Quiz(models.Model):
+	classroomChoices = (
+		(9, 'Tenth'),
+		(8, 'Ninth'),
+		(7, 'Eighth'),
+		(6, 'Seventh'),
+		(5, 'Sixth'),
+		(4, 'Fifth'),
+		(3, 'Fourth'),
+		(2, 'Third'),
+		(1, 'Second'),
+		(0, 'First'),
+	)
+	subjectChoices = (
+		(8, 'GeneralKnolowdge'),
+		(7, 'Computer'),
+		(6, 'Science'),
+		(5, 'Maths'),
+		(4, 'History'),
+		(3, 'Geography'),
+		(2, 'Marathi'),
+		(1, 'Hindi'),
+		(0, 'English'),
+	)
+
+	statusChoices = (
+		(2, 'Completed'),
+		(1, 'Started'),
+		(0, 'Created'),
+	)
+
+	numberChoices = (
+		(16, '16'),
+		(15, '15'),
+		(14, '14'),
+		(13, '13'),
+		(12, '12'),
+		(11, '11'),
+	)
+
+	tournament_name = models.CharField(max_length=200)
+	classroom = models.IntegerField(choices=classroomChoices)
+	subject = models.IntegerField(choices=subjectChoices)
+	status = models.IntegerField(choices=statusChoices, default=0)
+	total_questions = models.IntegerField(choices=numberChoices)
+	upload_questions = models.FileField(upload_to='templates/kbc_bank/', max_length=1000, null=True, blank=True)
+
+	def __str__(self):
+		return str(self.tournament_name) + ": " + str(dict(self.classroomChoices).get(self.classroom))+ ": " + str(dict(self.subjectChoices).get(self.subject))
+
+	def save(self, *args, **kwargs):
+		# if self.status == 1 and QuizTeam.objects.get(tournament_id=self.id):
+		super(Quiz, self).save(*args, **kwargs)
+
+
+class QuizTeam(TimeStampedModel):
+	team_name = models.CharField(max_length=200)
+	tournament = models.ForeignKey(Quiz, on_delete=models.PROTECT)
+	score = models.IntegerField(null=True, blank=True)
+	# students = models.OneToManyField(Student, null=True, blank=True)
+
+	def __str__(self):
+		return str(self.team_name)+ "-- " +str(self.tournament)
+
+
+class Question(models.Model):
+	statusChoices = (
+		('D', 'D'),
+		('C', 'C'),
+		('B', 'B'),
+		('A', 'A'),
+	)
+
+	team = models.ForeignKey(QuizTeam, on_delete=models.PROTECT)
+	no = models.IntegerField()
+	question = models.CharField(max_length=500)
+	opt_a = models.CharField(max_length=200)
+	opt_b = models.CharField(max_length=200)
+	opt_c = models.CharField(max_length=200)
+	opt_d = models.CharField(max_length=200)
+	correct = models.CharField(choices=statusChoices, max_length=5)
+	image = models.ImageField(upload_to='templates/kbc/', max_length=1000, null=True, blank=True)
+
+	def __str__(self):
+		return str(self.team)+ "-- " +str(self.no)
