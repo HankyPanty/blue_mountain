@@ -2,7 +2,7 @@ from coreengine.models import *
 import pandas as pd
 
 def get_questions_from_sheet(sheet_path):
-	read_file = pd.DataFrame(pd.read_excel(sheet_path)).transpose()
+	read_file = pd.DataFrame(pd.read_excel(sheet_path), engine='openpyxl').transpose()
 	length = len(read_file) - 1 if len(read_file)>0 else 0
 	data_team_wise = {}
 	list_data = []
