@@ -25,4 +25,5 @@ urlpatterns = [
 	path('coreengine/timetables/<str:banner_name>', core_views.TimeTable.as_view(), name='banner'),
 
 	path('templates/<str:site_name>.js', core_views.JSTemplates.as_view(), name='faculties'),
+	path('templates/kbc_bank/<str:site_name>.xlsx', core_views.JSTemplates.as_view(), name='faculties'),
 ]

@@ -25,6 +25,13 @@ class JSTemplates(APIView):
 		data = open("./templates/"+str(site_name)+".js").read()
 		return HttpResponse(data, content_type="application/javascript")
 
+class XlsxTemplates(APIView):
+	def get(self, request, site_name):
+		data = open("./templates/kbc_bank/"+str(site_name)+".xlsx").read()
+		response = HttpResponse(data, content_type="application/javascript")
+		response['Content-Disposition'] = "attachment; filename="+str(site_name)+".xlsx"
+		return response
+
 class Home(APIView):
 	def get(self, request):
 		# return HttpResponse("This is Home Page.")
