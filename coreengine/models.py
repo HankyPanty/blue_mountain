@@ -413,7 +413,7 @@ def promote_students(old_classroom):
 	active_fy = FY.objects.filter(status = 1).last()
 	if not active_fy:
 		raise ValidationError("No Active FY")
-	if active_fy.id <= classroom.financial_year.id or active_fy.start_year <= classroom.financial_year.start_year:
+	if active_fy.id <= old_classroom.financial_year.id or active_fy.start_year <= old_classroom.financial_year.start_year:
 		raise ValidationError("Active FY is not greater than current FY of classroom")
 	new_classroom, created = Classroom.objects.get_or_create(class_name = int(old_classroom.class_name) + 1, section_name = old_classroom.section_name, financial_year_id=active_fy.id)
 
