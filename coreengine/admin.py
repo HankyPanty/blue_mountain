@@ -202,6 +202,12 @@ class AmountAdmin(admin.ModelAdmin):
     inlines = [AmountDetailsinline]
     # actions = [filter_remaining_fees, filter_out_completed_fees]
     change_list_template = 'admin/total_amounts_template.html'
+    def changelist_view(self, request, obj=None):
+        if request.user.groups.filter(name='student-login'):
+            self.list_display = ('fee', 'total_amount', 'amount_remaining', 'completed', 'created')
+        else:
+            self.list_display = ('student', 'fee', 'amount_remaining', 'total_amount', 'completed', 'discount', 'created', 'modified')
+        return super(AmountAdmin, self).changelist_view(request, obj)
     def get_readonly_fields(self, request, obj=None):
         if not obj:
             return ['fee', 'amount_remaining', 'amount_paid']
