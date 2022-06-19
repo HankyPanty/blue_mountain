@@ -111,6 +111,16 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
+JAZZMIN_SETTINGS = {
+    "topmenu_links": [{"name": "Website Home", "url":"/"}],
+    "usermenu_links": [{"name": "Website Home", "url":"/"}],
+    "related_modal_active": True
+}
+
+JAZZMIN_UI_TWEAKS = {
+    "theme": "minty",
+}
+
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
