@@ -39,6 +39,11 @@ class StudentAttendanceAdmin(admin.ModelAdmin):
 @admin.register(models.StudentComment)
 class StudentCommentAdmin(admin.ModelAdmin):
     list_display = ('student', 'comment_type', 'comment', 'resolved')
+    def get_readonly_fields(self, request, obj=None):
+        if request.user.groups.filter(name='student-login'):
+            return ['student', 'comment_type', 'comment']
+        else:
+            return ["resolved"]
 
 # 
 
