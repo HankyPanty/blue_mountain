@@ -22,8 +22,12 @@ from files import models as file_models
 
 class JSTemplates(APIView):
 	def get(self, request, site_name):
-		data = open("./templates/"+str(site_name)+".js").read()
+		data = open("./templates/"+str(site_name)+".js", encoding="utf-8").read()
 		return HttpResponse(data, content_type="application/javascript")
+
+class HTMLTemplates(APIView):
+	def get(self, request, site_name):
+		return render(request, site_name + '.html')
 
 class XlsxTemplates(APIView):
 	def get(self, request, site_name):
@@ -109,7 +113,7 @@ class Gallery(APIView):
 			else:
 				data[images_url[0]] = [images_url[1]]
 
-		return render(request, 'gallery.html', {'event_images':data})
+		return render(request, 'schoolGallery.html', {'event_images':data})
 
 
 class Social(APIView):

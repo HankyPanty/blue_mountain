@@ -1,0 +1,167 @@
+<div class="background-image"></div>
+
+<div class="top_head">
+  <div style="float: left;">  <img class="aligncenter size-thumbnail" src="/templates/banner/blue_mountain_valley_logo.png" width="180" height="70" />
+  </div>
+  <div style="float: center;">  <a id="top" href="index.html">Blue Valley School Home</a>
+  </div>
+</div>
+
+<div class="dropdown" onmouseout="myFunctionOut()">
+<button onmouseover="myFunction()" class="dropbtn">Contact</button>
+    <div id="myDropdown" class="dropdown-content">
+        <a href="https://www.facebook.com/" target="_blank">Facebook</a>
+        <a href="https://www.youtube.com/" target="_blank">Youtube</a>
+        <a href="/contact.html">More</a>
+    </div>
+</div>
+
+<div class="dropdown"  onmouseout="myFunctionOut2()">
+<button onmouseover="myFunction2()" class="dropbtn">Views</button>
+    <div id="myDropdown2" class="dropdown-content">
+        <a href="/gallery">School</a>
+        <a href="/eventGallery.html">Events</a>
+        <!-- <a href="yearbookGallery.html">Yearbook</a> -->
+        <a href="/kbc_select.html">KBC Game</a>
+        <a href="/admin">LOGIN</a>
+    </div>
+</div>
+
+<div class="dropdown" onmouseout="myFunctionOut3()">
+<button onmouseover="myFunction3()" class="dropbtn">About Us</button>
+    <div id="myDropdown3" class="dropdown-content">
+        <a href="/goals.html">Goals</a>
+        <a href="/founders.html">About The Founders</a>
+        <a href="/infra.html">Facilities/Infra</a>
+        <a href="/teachers.html">Staff</a>
+        <a href="/branches.html">Branches</a>
+        <a href="/curriculum.html">Curriculum</a>
+    </div>
+</div>
+
+<div id="mainBody" style="top: 20%; height: 70%;"></div>
+
+<footer>
+    <p>Founded in the year 2016, Blue Mountain is situated at a sprawling land in the lap of nature.</p>
+    <p href="contact.html">C-8, Teacher's colony, near SJP petrol pump, Bidkin – 431105.</p>
+</footer>
+
+<style type="text/css">
+                  *{  margin: 0;
+        padding: 0;
+        colour: grey;
+        }
+
+        .background-image{ 
+          position: fixed;
+          display: block;
+          background-image: url("/templates/banner/blue_mountain_logo.png");
+          width: 100%;
+          height: 100%;
+          filter: blur(15px);
+            }
+        .top_head{
+          position: relative;
+          background: black;
+          text-align: center;
+          color: white;
+          padding: 20px;
+          font-size: 30px;
+          width: 40%;
+          float: left;
+        }
+        .top_head:hover, .top_head:focus {
+          background-color: #3e8e41;
+        }
+
+        footer{
+          position: fixed;
+          background: black;
+          text-align: center;
+          color: white;
+          padding: 20px;
+          font-size: 18px;
+          bottom: 0;
+          width: 100%;
+          float: bottom;
+               }
+        #a{
+          font-size: 100px;
+          text-align: center;
+         }
+        .dropbtn {
+          background-color: grey;
+          text-align: center;
+          color: white;
+          width: 100%;
+          /*box-sizing: border-box;*/
+          /*width: 20%;*/
+          padding: 25px;
+          padding-right: 60px;
+          padding-left: 60px;
+          font-size: 20px;
+          border: none;
+          cursor: pointer;
+        }
+        .dropbtn:hover, .dropbtn:focus {
+          background-color: #3e8e41;
+        }
+
+        .dropdown {
+          float: right;
+          position: relative;
+          display: inline-block;
+          hight:  20px;
+          width: 15%;
+        }
+        .ass{
+          display: none;
+          position: absolute;
+          background-color: #f9f9f9;
+          min-width: 160px;
+          overflow: auto;
+          box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+          left: 0;
+          z-index: 1;
+          }
+          .ass {
+          color: black;
+          padding: 12px 16px;
+          text-decoration: none;
+          display: block;
+        }
+        .dropdown-content {
+          display: none;
+          position: absolute;
+          background-color: #f9f9f9;
+          min-width: 160px;
+          overflow: auto;
+          box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+          right: 0;
+          z-index: 1;
+        }
+ 
+        .dropdown-content a {
+          color: black;
+          padding: 12px 16px;
+          text-decoration: none;
+          display: block;
+        }
+
+        .dropdown a:hover {
+          background-color: #f1f1f1
+        }
+
+        .show {
+          display:block;
+        }
+        .mid{
+            position: fixed;
+            color: black;
+           /* padding: 30px;*/
+            padding-left: 70px;
+            padding-top: 130px;
+            font-size: 30px;
+
+          }
+</style>
